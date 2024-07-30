@@ -1,14 +1,20 @@
-// App.tsx
+// App.js
+
+import 'react-native-get-random-values';
+
 import React from 'react';
-import {SafeAreaView, StyleSheet, Text} from 'react-native';
-import WebViewComponent from './WebViewComponent';
+import {SafeAreaView, StyleSheet} from 'react-native';
+
 import MainNavigator from './src/navigation/MainNavigator';
+import {NativeBaseProvider} from 'native-base';
 
 const App = () => {
   return (
-    <SafeAreaView style={styles.container}>
-      <MainNavigator />
-    </SafeAreaView>
+    <NativeBaseProvider>
+      <SafeAreaView style={styles.container}>
+        <MainNavigator />
+      </SafeAreaView>
+    </NativeBaseProvider>
   );
 };
 
