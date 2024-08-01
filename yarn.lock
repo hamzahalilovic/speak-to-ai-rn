@@ -2101,6 +2101,13 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@egjs/hammerjs@^2.0.17":
+  version "2.0.17"
+  resolved "https://registry.yarnpkg.com/@egjs/hammerjs/-/hammerjs-2.0.17.tgz#5dc02af75a6a06e4c2db0202cae38c9263895124"
+  integrity sha512-XQsZgjm2EcVUiZQf11UBJQfmZeEmOW8DpI1gsFeln6w0ae0ii4dMQEQ0kjl6DspdWX1aGY1/loyXnP0JS06e/A==
+  dependencies:
+    "@types/hammerjs" "^2.0.36"
+
 "@emotion/is-prop-valid@1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-1.2.2.tgz#d4175076679c6a26faa92b03bb786f9e52612337"
@@ -4272,6 +4279,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/hammerjs@^2.0.36":
+  version "2.0.45"
+  resolved "https://registry.yarnpkg.com/@types/hammerjs/-/hammerjs-2.0.45.tgz#ffa764bb68a66c08db6efb9c816eb7be850577b1"
+  integrity sha512-qkcUlZmX6c4J8q45taBKTL3p+LbITgyx7qhlPYOdOHZB7B31K0mXbP5YA7i7SgDeEGuI9MnumiKPEMrxg8j3KQ==
+
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1":
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.6.tgz#7739c232a1fee9b4d3ce8985f314c0c6d33549d7"
@@ -4316,6 +4328,34 @@
   integrity sha512-Pi53fdVMk7Ig5IfAMltQQMgtY7xLzHaEous8IQasYsdQbYK3v90FkxI3XYQCe/Qme58pqp14lXJIsFmGP8VoZQ==
   dependencies:
     undici-types "~5.26.4"
+
+"@types/prop-types@*":
+  version "15.7.12"
+  resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.12.tgz#12bb1e2be27293c1406acb6af1c3f3a1481d98c6"
+  integrity sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==
+
+"@types/react-native-vector-icons@^6.4.18":
+  version "6.4.18"
+  resolved "https://registry.yarnpkg.com/@types/react-native-vector-icons/-/react-native-vector-icons-6.4.18.tgz#18671c617b9d0958747bc959903470dde91a8c79"
+  integrity sha512-YGlNWb+k5laTBHd7+uZowB9DpIK3SXUneZqAiKQaj1jnJCZM0x71GDim5JCTMi4IFkhc9m8H/Gm28T5BjyivUw==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "^0.70"
+
+"@types/react-native@^0.70":
+  version "0.70.19"
+  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.70.19.tgz#b4e651dcf7f49c69ff3a4c3072584cad93155582"
+  integrity sha512-c6WbyCgWTBgKKMESj/8b4w+zWcZSsCforson7UdXtXMecG3MxCinYi6ihhrHVPyUrVzORsvEzK8zg32z4pK6Sg==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react@*":
+  version "18.3.3"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.3.3.tgz#9679020895318b0915d7a3ab004d92d33375c45f"
+  integrity sha512-hti/R0pS0q1/xx+TsI73XIqk26eBsISZ2R0wUijXIngRK9R/e7Xw/cXVxQK7R5JjW+SV4zGcn5hXjudkN/pLIw==
+  dependencies:
+    "@types/prop-types" "*"
+    csstype "^3.0.2"
 
 "@types/semver@^7.3.12":
   version "7.5.8"
@@ -6385,6 +6425,13 @@ hermes-profile-transformer@^0.0.6:
   dependencies:
     source-map "^0.7.3"
 
+hoist-non-react-statics@^3.3.0:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
+  integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
+  dependencies:
+    react-is "^16.7.0"
+
 html-escaper@^2.0.0:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/html-escaper/-/html-escaper-2.0.2.tgz#dfd60027da36a36dfcbe236262c00a5822681453"
@@ -8416,7 +8463,7 @@ react-icons@^5.2.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.3.1.tgz#e83557dc12eae63a99e003a46388b1dcbb44db7e"
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
 
-react-is@^16.13.0, react-is@^16.13.1:
+react-is@^16.13.0, react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
@@ -8437,6 +8484,16 @@ react-native-dotenv@^3.4.11:
   integrity sha512-6vnIE+WHABSeHCaYP6l3O1BOEhWxKH6nHAdV7n/wKn/sciZ64zPPp2NUdEUf1m7g4uuzlLbjgr+6uDt89q2DOg==
   dependencies:
     dotenv "^16.4.5"
+
+react-native-gesture-handler@^2.18.0:
+  version "2.18.0"
+  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.18.0.tgz#0246ff3b6b1d26e2dc2e6990dfcb06e100a163de"
+  integrity sha512-NA77wlyTIXBZcPsZY2mUfvTrXp9/eTfwmIViakfDUGMYZTRdT/3cp9ugCIX44CHq5GlYdjy63mIjjCs1qMJ3Jg==
+  dependencies:
+    "@egjs/hammerjs" "^2.0.17"
+    hoist-non-react-statics "^3.3.0"
+    invariant "^2.2.4"
+    prop-types "^15.7.2"
 
 react-native-get-random-values@^1.11.0:
   version "1.11.0"

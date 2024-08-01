@@ -13,6 +13,7 @@ import {
   init,
   navigate,
 } from './responses.js';
+import {johanna, jouko, markus} from './aiCollection.js';
 
 const app = express();
 const PORT = 3001;
@@ -142,6 +143,20 @@ app.post('/api/v1/updateUsedTokens', (req, res) => {
   console.log('LOG UPDATE END ', new Date().toISOString());
 
   res.status(200).json({response: {tokens: usageInfo?.usedTokens || 0}});
+});
+
+
+app.post('/api/v1/navigatevalto', (req, res) => {
+  res.status(200).json(navigate);
+});
+app.post('/api/v1/navigatemarkus', (req, res) => {
+  res.status(200).json(markus);
+});
+app.post('/api/v1/navigatejouko', (req, res) => {
+  res.status(200).json(jouko);
+});
+app.post('/api/v1/navigatejohanna', (req, res) => {
+  res.status(200).json(johanna);
 });
 
 // Start the server

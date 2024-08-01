@@ -24,14 +24,18 @@ import autosize from 'autosize';
 import {clientInit} from '../../utils/getInit';
 
 import {
-  ChatlogContainer,
+  // ChatlogContainer,
   CustomFooter,
   CustomSidebar,
   CustomSlide,
-  QuestionCard,
+  // QuestionCard,
   SidebarOpenButton,
-  AnswerCard,
+  // AnswerCard,
 } from '../../components/index';
+
+import AnswerCard from './components/AnswerCard';
+import QuestionCard from './components/QuestionCard';
+import ChatlogContainer from './components/ChatlogContainer';
 
 // import {QuestionCard} from '../../components/index';
 
@@ -75,6 +79,8 @@ import {
   MIDDLEWARE_API_URL,
 } from '@env';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import ChatInput from './components/ChatInput';
+import {useAppContext} from '../../context/AppContext';
 
 // remove this when has better way to do this
 function ConditionalToast({shouldShowToast, speaker}) {
@@ -112,17 +118,20 @@ const ChatScreen = () => {
   const [tempInputValue, setTempInputValue] = useState('');
 
   const [inputValue, setInputValue] = useState('');
-  const API_URL = 'http://localhost:3001/api/v1';
+  // const API_URL = 'http://localhost:3001/api/v1';
 
   const navigation = useNavigation();
   const route = useRoute();
   // const {username} = props.name || {};
   //get username from navigation
-  const username = 'valto';
+  // const username = 'markus';
+  const [username, setUsername] = useState('');
 
   const [haveAnswer, setHaveAnswer] = useState(false);
   const [sidebarShown, setSidebarShown] = useState(false);
   const {isOpen, onOpen, onClose} = useState();
+
+  const [error, setError] = useState('w');
 
   const isMobile = width < 768;
 
@@ -138,8 +147,9 @@ const ChatScreen = () => {
   const disclaimerToastID = 'disclaimer-toast-init';
 
   // console.log('props', props);
+  const [knowledgebase, setKnowledgebase] = useState({}); // Use state instead of ref
 
-  const knowledgebase = useRef(props);
+  // const knowledgebase = useRef(props);
 
   // useEffect(() => {
   //   if (props && props.name) {
@@ -147,7 +157,7 @@ const ChatScreen = () => {
   //   }
   // }, [props]);
 
-  knowledgebase.current = props;
+  // knowledgebase.current = props;
 
   const uniqueId = useRef();
   const haveChunks = useRef(false);
@@ -360,10 +370,21 @@ const ChatScreen = () => {
     [sessionID],
   );
 
+  const {selectedAI} = useAppContext(); // Access selected AI from context
+
+  const [propsFetched, setPropsFetched] = useState(false); // State to track props fetching
   useEffect(() => {
+    const API_URL = `http://localhost:3001/api/v1/navigate${
+      selectedAI?.id || ''
+    }`;
+    console.log('API URL', API_URL);
+
     const fetchProps = async () => {
+
+      setState({loading: true});
+
       try {
-        const response = await fetch(`${API_URL}/navigate`, {
+        const response = await fetch(`${API_URL}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -376,24 +397,64 @@ const ChatScreen = () => {
 
         const result = await response.json();
         setProps(result);
-        knowledgebase.current = result;
+        // knowledgebase.current = result;
+        setKnowledgebase(result);
+        setPropsFetched(true); // Set to true after fetching is done
       } catch (err) {
         setError(err.message);
+        setPropsFetched(false); // Ensure it's false on error
       } finally {
         setState({loading: false});
       }
     };
 
+    // Trigger fetchProps whenever selectedAI changes
+
+    fetchProps();
+  }, [selectedAI]); // Depend on selectedAI
+  useEffect(() => {
+    console.log('selectedAI', selectedAI);
+
+    setUsername(selectedAI.id);
+
+    // const API_URL = `http://localhost:3001/api/v1/navigate${
+    //   selectedAI?.id || ''
+    // }`;
+
+    // const fetchProps = async () => {
+    //   try {
+    //     const response = await fetch(`${API_URL}`, {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //     });
+
+    //     if (!response.ok) {
+    //       throw new Error('Network response was not ok');
+    //     }
+
+    //     const result = await response.json();
+    //     setProps(result);
+    //     knowledgebase.current = result;
+    //   } catch (err) {
+    //     setError(err.message);
+    //   } finally {
+    //     setState({loading: false});
+    //   }
+    // };
+
     async function init() {
       effectCalled.current = true;
+      setState({loading: true});
 
-      console.log('INIT ', username, knowledgebase.current);
+      console.log('INIT ', username, knowledgebase);
 
       if (username) {
-        setCurrentUser(knowledgebase.current.name);
+        setCurrentUser(knowledgebase.name);
         const {error, data} = await clientInit(fetchWithTimeout, {
           sessionID,
-          knowledgebaseId: knowledgebase.current.knowledgebaseId,
+          knowledgebaseId: knowledgebase.knowledgebaseId,
           sourceLng: EVALS.contentLng,
           targetLng: language,
           includeExample: true,
@@ -444,12 +505,9 @@ const ChatScreen = () => {
 
         let summary = data.response.summary;
 
-        if (
-          knowledgebase.current.description &&
-          knowledgebase.current.description.length > 0
-        ) {
+        if (knowledgebase.description && knowledgebase.description.length > 0) {
           summary = `${summary}
-            Description of the speaker: ${knowledgebase.current.description}`;
+            Description of the speaker: ${knowledgebase.description}`;
         }
 
         setSummary(summary);
@@ -457,10 +515,13 @@ const ChatScreen = () => {
         setTextData(await initTextData());
       }
     }
-    if (!effectCalled.current) {
-      fetchProps().then(init);
+
+    if (propsFetched) {
+      // Re-run init only after props have been fetched
+      init();
     }
   }, [
+    propsFetched,
     username,
     toast,
     sessionID,
@@ -472,6 +533,7 @@ const ChatScreen = () => {
     showDisclaimerToast,
     setAIConfig,
     defaultModel,
+    knowledgebase,
   ]);
   console.log('unique id uniqueId.current 1', uniqueId.current);
 
@@ -568,7 +630,7 @@ const ChatScreen = () => {
         chunks,
         summary,
         chatId,
-        knowledgebase.current.knowledgebaseId,
+        knowledgebase.knowledgebaseId,
         sessionID,
         entryType,
         langCode,
@@ -590,7 +652,7 @@ const ChatScreen = () => {
         chunks,
         summary,
         chatId,
-        knowledgebaseId: knowledgebase.current.knowledgebaseId,
+        knowledgebaseId: knowledgebase.knowledgebaseId,
         session: sessionID,
         entryType,
         langCode,
@@ -677,7 +739,7 @@ const ChatScreen = () => {
         userId: currentUser,
         requestId,
         finish_reason: results.finish_reason,
-        currentIndex: knowledgebase.current.knowledgebaseId,
+        currentIndex: knowledgebase.knowledgebaseId,
         llm: defaultModel,
         statement: entry,
         session: sessionID,
@@ -734,7 +796,7 @@ const ChatScreen = () => {
         entry,
         lastGoodAnswer,
         {sessionID, scoreLimit, contentLng: EVALS.contentLng},
-        knowledgebase.current.knowledgebaseId,
+        knowledgebase.knowledgebaseId,
         true,
       );
 
@@ -869,9 +931,13 @@ const ChatScreen = () => {
     }
   };
 
-  if (state.loading && !state.errors) {
-    return <Text>Loading...</Text>;
-  }
+  // if (state.loading && !state.errors) {
+  //   return (
+  //     <Center flex={1} zIndex={9999}>
+  //       <Spinner size="lg" />
+  //     </Center>
+  //   );
+  // }
 
   console.log('state', state);
   console.log('statement 3', statement);
@@ -914,50 +980,31 @@ const ChatScreen = () => {
   // /speak-to.png
   return (
     <ScrollView ref={scrollViewRef} style={{flex: 1}}>
-      <Flex
-        backgroundColor={'#e2e2e2'}
-        width={'100vw'}
-        height={'100vh'}
-        justifyContent={'center'}
-        alignItems={'center'}>
-        <SidebarOpenButton
-          sidebarShown={sidebarShown}
-          openSidebar={() => {
-            setSidebarShown(!sidebarShown);
-          }}
-        />
-
-        {/* <CustomSidebar
-        showDisclaimerToast={showDisclaimerToast}
-        sidebarShown={sidebarShown}
-      /> */}
-
-        <CustomSlide check={!isMobile} sidebarShown={sidebarShown}>
-          <ChatlogContainer sidebarShown={sidebarShown}>
-            {/* <Flex flex={1}> */}
+      <ChatlogContainer sidebarShown={sidebarShown}>
+        {state.loading ? (
+          <Center flex={1}>
+            <Spinner size="lg" />
+          </Center>
+        ) : (
+          <>
             {!state.errors && (
               <HStack gap="0px" width="100%" height="100%">
                 <VStack
                   h="100%"
                   w="100%"
-                  marginTop="-20px"
-                  marginBottom="-10px"
+                  mt="-20px"
+                  mb="-10px"
                   space={1}
                   color="black">
                   <Box>
-                    <Header
-                      isMobile={isMobile}
-                      // onClose={onClose}
-                      // onOpen={onOpen}
-                    />
+                    <Header isMobile={isMobile} />
                   </Box>
                   <Flex
                     ref={messagesContainerRef}
                     id="messages_container"
                     flex={1}
-                    className="content"
                     overflowX="visible">
-                    <Text id="messages" className="messages" ref={messagesRef}>
+                    <Text id="messages" ref={messagesRef}>
                       <Box height="130px">
                         <Box height="100px" backgroundColor="#e2e2e2" />
                         <Box
@@ -968,20 +1015,16 @@ const ChatScreen = () => {
                           borderTopRightRadius="30px"
                         />
                       </Box>
-                      <Box padding="20px" paddingBottom="0px">
-                        {!(
-                          state.isUpdated &&
-                          example.show &&
-                          isFooterRendered
-                        ) && (
-                          <Box>
-                            <WelcomeContainer
-                              isMobile={isMobile}
-                              data={knowledgebase.current}
-                              asPartOfConvo
-                            />
-                          </Box>
-                        )}
+                      <Box padding="24px" paddingBottom="0px">
+                        {/* {!state.isUpdated && (
+                      <Box>
+                        <WelcomeContainer
+                          isMobile={isMobile}
+                          data={knowledgebase.current}
+                          asPartOfConvo
+                        />
+                      </Box>
+                    )} */}
 
                         {messageList.map((message, key) => (
                           <Box
@@ -989,15 +1032,13 @@ const ChatScreen = () => {
                             className="messageContainer">
                             <QuestionCard
                               key={`question-${key}`}
-                              // isMobile={isMobile}
+                              isMobile={isMobile}
                               message={message[0]}
                             />
-
                             <AnswerCard
                               handleFeedbackClick={handleFeedbackClick}
                               message={message[1]}
-                              key={`answer-${key}`}
-                              knowledgeBase={knowledgebase.current}
+                              knowledgeBase={knowledgebase}
                               language={language}
                               isMobile={isMobile}
                             />
@@ -1015,80 +1056,24 @@ const ChatScreen = () => {
                         />
                       </Box>
                     </Text>
-                    {state.isUpdated && example.show && isFooterRendered && (
-                      <>
-                        <Welcome
-                          data={knowledgebase.current}
-                          onClick={e => {
-                            exampleQuestionClicked.current = true;
-                            statement.current.value = example.question;
-                            setInputValue(example.question);
-                            const event = new KeyboardEvent('keydown', {
-                              key: 'Enter',
-                              code: 'Enter',
-                              keyCode: 13,
-                              which: 13,
-                              bubbles: true,
-                              cancelable: true,
-                            });
-
-                            statement.current.dispatchEvent(event);
-                            e.preventDefault();
-                          }}
-                          exampleText={example.question}
-                        />
-                        <Text
-                          style={{height: '10px', width: '100%'}}
-                          ref={scrollSpan2}
-                          id="scroll-marker2"
-                        />
-                      </>
-                    )}
                   </Flex>
                   <Box padding="20px" paddingTop="0px">
-                    {knowledgebase.current['test-mode'] && (
-                      <Box p={5} w="50%">
-                        <Alert status="warning">
-                          <AlertIcon />
-                          This is now in test mode.
-                        </Alert>
-                      </Box>
-                    )}
-                    {/* <Footer
+                    {/* {knowledgebase.current['test-mode'] && (
+                  <Box p={5} w="50%">
+                    <Alert status="warning">
+                      <AlertIcon />
+                      This is now in test mode.
+                    </Alert>
+                  </Box>
+                )} */}
+
+                    <ChatInput
                       ref={statement}
-                      newMessage={newMessage}
-                      onMounted={() => {
-                        setIsFooterRendered(true);
-                      }}
-                    /> */}
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        padding: 20,
-                        paddingTop: 0,
-                      }}>
-                      <TextInput
-                        ref={statement}
-                        style={{
-                          flex: 1,
-                          borderColor: '#ccc',
-                          borderWidth: 1,
-                          borderRadius: 8,
-                          padding: 10,
-                          height: 40,
-                        }}
-                        value={tempInputValue}
-                        onChangeText={setTempInputValue}
-                        onSubmitEditing={() => handleNewMessage(tempInputValue)}
-                        placeholder="Type your message..."
-                        returnKeyType="send"
-                      />
-                      <Button
-                        onPress={() => handleNewMessage(tempInputValue)}
-                        title="Send"
-                        style={{marginLeft: 10}}
-                      />
-                    </View>
+                      value={tempInputValue}
+                      onChangeText={setTempInputValue}
+                      onSubmitEditing={() => handleNewMessage(tempInputValue)}
+                      placeholder="Ask anything..."
+                    />
                   </Box>
                 </VStack>
               </HStack>
@@ -1098,16 +1083,9 @@ const ChatScreen = () => {
                 <Alert status="error">Invalid username</Alert>
               </>
             )}
-            {/* </Flex> */}
-          </ChatlogContainer>
-
-          <CustomFooter
-            sidebarShown={sidebarShown}
-            textData={textData.footer}
-            isMobile={isMobile}
-          />
-        </CustomSlide>
-      </Flex>
+          </>
+        )}
+      </ChatlogContainer>
     </ScrollView>
   );
 };

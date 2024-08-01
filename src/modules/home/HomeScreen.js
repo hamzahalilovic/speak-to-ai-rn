@@ -1,21 +1,15 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Button} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
+
   return (
-    <View style={styles.container}>
-      <Text>Home Screen</Text>
-      {/* Implement your home screen functionality here */}
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <Button title="Go to Chat" onPress={() => navigation.navigate('Chat')} />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default HomeScreen;

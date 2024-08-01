@@ -3,17 +3,23 @@
 import 'react-native-get-random-values';
 
 import React from 'react';
-import {SafeAreaView, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 import MainNavigator from './src/navigation/MainNavigator';
 import {NativeBaseProvider} from 'native-base';
 
+import AppWrapper from './src/components/AppWrapper';
+
+import {AppContextProvider} from './src/context/AppContext';
+
 const App = () => {
   return (
     <NativeBaseProvider>
-      <SafeAreaView style={styles.container}>
-        <MainNavigator />
-      </SafeAreaView>
+      <AppWrapper>
+        <AppContextProvider>
+          <MainNavigator />
+        </AppContextProvider>
+      </AppWrapper>
     </NativeBaseProvider>
   );
 };
