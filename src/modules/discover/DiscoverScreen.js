@@ -28,6 +28,7 @@ const DiscoverScreen = () => {
       description: 'About Valto AI',
       avatar:
         'https://s3.us-east-1.amazonaws.com/cdn.speak-to.ai/avatars/valto.png',
+      knowledgebaseId: '0e4f5d01-3b31-4081-a91c-eb861ff2a595',
     },
     {
       id: 'jouko',
@@ -35,6 +36,7 @@ const DiscoverScreen = () => {
       description: 'About Jouko AI',
       avatar:
         'https://s3.us-east-1.amazonaws.com/cdn.speak-to.ai/avatars/jouko.png',
+      knowledgebaseId: '7fdbc604-8eb4-43a1-82bd-4eafb60640ee',
     },
 
     {
@@ -43,6 +45,7 @@ const DiscoverScreen = () => {
       description: 'About Johanna AI',
       avatar:
         'https://s3.us-east-1.amazonaws.com/cdn.speak-to.ai/avatars/johanna.png',
+      knowledgebaseId: 'a412bc57-4aa4-4769-8915-d6a63eece050',
     },
   ];
 
