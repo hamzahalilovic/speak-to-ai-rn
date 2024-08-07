@@ -8,11 +8,12 @@ import Footer from '../../Footer';
 import Header from '../../Header2';
 // import Welcome from '../../Welcome';
 import {
-  View,
-  ScrollView,
+  // View,
+  // ScrollView,
   TextInput,
   Dimensions,
   useWindowDimensions,
+  Platform,
 } from 'react-native';
 
 import {findNodeHandle} from 'react-native';
@@ -47,6 +48,8 @@ import {__} from '../../utils/lng';
 import WelcomeContainer from '../../Welcome';
 import {initTextData} from '../../utils/initTextData';
 import {
+  View,
+  ScrollView,
   Box,
   Button,
   Center,
@@ -60,6 +63,7 @@ import {
   Card,
   Avatar,
   HStack,
+  KeyboardAvoidingView,
 } from 'native-base';
 
 import {
@@ -905,6 +909,7 @@ const ChatScreen = () => {
       id: newThreadId,
       title: `Thread ${new Date().toLocaleString()}`,
       messages: [],
+      createdAt: new Date().toLocaleString(),
     };
 
     const isDuplicate = threads.some(thread => thread.id === newThreadId);
@@ -956,103 +961,107 @@ const ChatScreen = () => {
   console.log('threads in cha screen', threads);
 
   return (
-    <View style={{flex: 1, backgroundColor: '#f5f5f5', width: '100%'}}>
-      {/* <CustomHeader handleNewThread={handleNewThread} /> */}
-      <CustomHeader
-        knowledgebaseId={knowledgebase.knowledgebaseId}
-        name={knowledgebase.name}
-        handleNewThread={handleNewThread}
-        isNewThreadDisabled={messageList.length === 0}
-      />
-      {state.loading ? (
-        <Center flex={1}>
-          <Spinner size="lg" />
-        </Center>
-      ) : state.errors ? (
-        <Alert status="error">Invalid username</Alert>
-      ) : (
-        <>
-          <ScrollView
-            ref={scrollViewRef}
-            style={{flex: 1}}
-            contentContainerStyle={{paddingBottom: 80, width: '100%'}} // Ensure there's enough space for the ChatInput
-          >
-            <ChatlogContainer
-              sidebarShown={sidebarShown}
-              style={{width: '100%'}}>
-              <HStack gap="0px" width="100%" height="100%">
-                <VStack
-                  h="100%"
-                  w="100%"
-                  mt="-20px"
-                  mb="-10px"
-                  space={1}
-                  color="black">
-                  <Flex
-                    ref={messagesContainerRef}
-                    id="messages_container"
-                    style={{flex: 1, width: '100%'}}>
-                    <Box
-                      id="messages"
-                      ref={messagesRef}
-                      style={{
-                        flex: 1,
+    <KeyboardAvoidingView
+      style={{flex: 1, backgroundColor: '#f5f5f5', width: '100%'}}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <View style={{flex: 1, backgroundColor: '#f5f5f5', width: '100%'}}>
+        {/* <CustomHeader handleNewThread={handleNewThread} /> */}
+        <CustomHeader
+          knowledgebaseId={knowledgebase.knowledgebaseId}
+          name={knowledgebase.name}
+          handleNewThread={handleNewThread}
+          isNewThreadDisabled={messageList.length === 0}
+        />
+        {state.loading ? (
+          <Center flex={1}>
+            <Spinner size="lg" />
+          </Center>
+        ) : state.errors ? (
+          <Alert status="error">Invalid username</Alert>
+        ) : (
+          <>
+            <ScrollView
+              ref={scrollViewRef}
+              style={{flex: 1}}
+              contentContainerStyle={{paddingBottom: 80, width: '100%'}} // Ensure there's enough space for the ChatInput
+            >
+              <ChatlogContainer
+                sidebarShown={sidebarShown}
+                style={{width: '100%'}}>
+                <HStack gap="0px" width="100%" height="100%">
+                  <VStack
+                    h="100%"
+                    w="100%"
+                    mt="-20px"
+                    mb="-10px"
+                    space={1}
+                    color="black">
+                    <Flex
+                      ref={messagesContainerRef}
+                      id="messages_container"
+                      style={{flex: 1, width: '100%'}}>
+                      <Box
+                        id="messages"
+                        ref={messagesRef}
+                        style={{
+                          flex: 1,
 
-                        width: '100%',
-                      }}>
-                      <Box padding="24px" paddingBottom="0px">
-                        {messageList.map((message, key) => (
-                          <Box
-                            key={`chats-${key}`}
-                            className="messageContainer">
-                            <QuestionCard
-                              key={`question-${key}`}
-                              message={message[0]}
-                            />
-                            <AnswerCard
-                              handleFeedbackClick={handleFeedbackClick}
-                              message={message[1]}
-                              knowledgeBase={knowledgebase}
-                              language={language}
-                            />
-                          </Box>
-                        ))}
-                        <Text
-                          style={{
-                            height: '10px',
-                            width: '100%',
-                            marginBottom: '25px',
-                          }}
-                          ref={scrollSpan}
-                          id="scroll-marker"
-                        />
+                          width: '100%',
+                        }}>
+                        <Box padding="24px" paddingBottom="0px">
+                          {messageList.map((message, key) => (
+                            <Box
+                              key={`chats-${key}`}
+                              className="messageContainer">
+                              <QuestionCard
+                                key={`question-${key}`}
+                                message={message[0]}
+                              />
+                              <AnswerCard
+                                handleFeedbackClick={handleFeedbackClick}
+                                message={message[1]}
+                                knowledgeBase={knowledgebase}
+                                language={language}
+                              />
+                            </Box>
+                          ))}
+                          <Text
+                            style={{
+                              height: '10px',
+                              width: '100%',
+                              marginBottom: '25px',
+                            }}
+                            ref={scrollSpan}
+                            id="scroll-marker"
+                          />
+                        </Box>
                       </Box>
-                    </Box>
-                  </Flex>
-                </VStack>
-              </HStack>
-            </ChatlogContainer>
-          </ScrollView>
-          <Box
-            style={{
-              position: 'absolute',
-              bottom: 20,
-              left: 0,
-              right: 0,
-              zIndex: 9999,
-            }}>
-            <ChatInput
-              ref={statement}
-              value={tempInputValue}
-              onChangeText={setTempInputValue}
-              onSubmitEditing={() => handleNewMessage(tempInputValue)}
-              placeholder="Ask anything..."
-              editable={!queryActive}
-            />
-          </Box>
-        </>
-      )}
-    </View>
+                    </Flex>
+                  </VStack>
+                </HStack>
+              </ChatlogContainer>
+            </ScrollView>
+            <Box
+              style={{
+                position: 'absolute',
+                bottom: 20,
+                left: 0,
+                right: 0,
+                zIndex: 9999,
+              }}>
+              <ChatInput
+                ref={statement}
+                value={tempInputValue}
+                onChangeText={setTempInputValue}
+                onSubmitEditing={() => handleNewMessage(tempInputValue)}
+                placeholder="Ask anything..."
+                editable={!queryActive}
+              />
+            </Box>
+          </>
+        )}
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 

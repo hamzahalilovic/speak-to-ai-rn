@@ -45,7 +45,7 @@ const ChatInput = React.forwardRef(
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: '#2d2d2d',
+    backgroundColor: '#212529',
     borderRadius: 30,
     paddingVertical: 10,
     paddingHorizontal: 20,

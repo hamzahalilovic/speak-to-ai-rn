@@ -1,16 +1,28 @@
 import React, {useEffect, useState} from 'react';
-import {View, FlatList, Text, TouchableOpacity, Alert} from 'react-native';
+import {View, FlatList, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {
+  Button,
+  HStack,
+  Text,
+  Box,
+  Menu,
+  Pressable,
+  Icon,
+  Popover,
+} from 'native-base';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   getThreads,
   deleteAllThreads,
   deleteThread,
+  saveThreads,
 } from './utils/threadsStorage';
 import {useAppContext} from '../../context/AppContext';
-import {Button} from 'native-base';
 
 const ThreadsScreen = ({route}) => {
   const {selectedAI, setCurrentThreadId, threads, setThreads} = useAppContext();
+
   const knowledgebaseId = selectedAI.knowledgebaseId;
   const navigation = useNavigation();
 
@@ -22,9 +34,10 @@ const ThreadsScreen = ({route}) => {
 
     fetchThreads();
   }, [knowledgebaseId]);
+
   const handleThreadPress = thread => {
-    setCurrentThreadId(thread.id); // Set the currentThreadId in the context
-    navigation.navigate('Chat'); // Navigate to the Chat screen
+    setCurrentThreadId(thread.id);
+    navigation.navigate('Chat');
   };
 
   const handleDeleteThread = threadId => {
@@ -68,38 +81,124 @@ const ThreadsScreen = ({route}) => {
     );
   };
 
+  const handleShowThreadInfo = thread => {
+    Alert.alert('Thread Information', `Created on: ${thread.createdAt}`);
+  };
+
+  const renameThread = async threadId => {
+    const thread = threads.find(t => t.id === threadId);
+
+    if (!thread) {
+      Alert.alert(
+        'Thread Not Found',
+        'The thread you are trying to rename does not exist.',
+      );
+      return;
+    }
+
+    Alert.prompt(
+      'Rename Thread',
+      'Enter a new name for this thread:',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: async newTitle => {
+            if (newTitle) {
+              try {
+                const updatedThreads = threads.map(t =>
+                  t.id === threadId ? {...t, title: newTitle} : t,
+                );
+                setThreads(updatedThreads);
+                await saveThreads(knowledgebaseId, updatedThreads);
+                Alert.alert('Success', 'Thread renamed successfully!');
+              } catch (e) {
+                console.error('Failed to rename thread', e);
+                Alert.alert(
+                  'Error',
+                  'An error occurred while renaming the thread.',
+                );
+              }
+            }
+          },
+        },
+      ],
+      'plain-text',
+      thread.title,
+    );
+  };
+
   console.log('threads in threads screen', threads);
 
   return (
-    <View>
-      <Button
-        title="Delete All Threads"
-        color="red"
-        onPress={handleDeleteAllThreads}
-        _text={'delete all threads'}
-      />
-
+    <View style={{flex: 1, padding: 16}}>
       <FlatList
         data={threads}
         keyExtractor={item => item.id}
         renderItem={({item}) => (
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              padding: 10,
-            }}>
-            <TouchableOpacity
-              onPress={() => handleThreadPress(item)}
-              style={{flex: 1}}>
+          <HStack
+            justifyContent="space-between"
+            alignItems="center"
+            padding={4}
+            borderBottomWidth={1}
+            borderBottomColor="gray.200">
+            <Pressable onPress={() => handleThreadPress(item)} flex={1}>
               <Text>{item.title}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleDeleteThread(item.id)}>
-              <Text style={{color: 'red'}}>Delete</Text>
-            </TouchableOpacity>
-          </View>
+            </Pressable>
+            <Menu
+              w="190"
+              trigger={triggerProps => {
+                return (
+                  <Pressable {...triggerProps}>
+                    <Icon as={Ionicons} name="ellipsis-vertical" size="lg" />
+                  </Pressable>
+                );
+              }}>
+              <Menu.Item onPress={() => renameThread(item.id)}>
+                <HStack alignItems="center">
+                  <Icon as={Ionicons} name="pencil" size="sm" mr={2} />
+                  <Text>Edit</Text>
+                </HStack>
+              </Menu.Item>
+              <Menu.Item onPress={() => handleShowThreadInfo(item)}>
+                <HStack alignItems="center">
+                  <Icon
+                    as={Ionicons}
+                    name="information-circle"
+                    size="sm"
+                    mr={2}
+                  />
+                  <Text>Info</Text>
+                </HStack>
+              </Menu.Item>
+              <Menu.Item onPress={() => handleDeleteThread(item.id)}>
+                <HStack alignItems="center">
+                  <Icon
+                    as={Ionicons}
+                    name="trash"
+                    size="sm"
+                    color="red.500"
+                    mr={2}
+                  />
+                  <Text color="red.500">Delete</Text>
+                </HStack>
+              </Menu.Item>
+            </Menu>
+          </HStack>
         )}
       />
+
+      <Button
+        mt={4}
+        borderColor="red.500"
+        variant="outline"
+        colorScheme="red"
+        onPress={handleDeleteAllThreads}>
+        Delete All Threads
+      </Button>
     </View>
   );
 };
