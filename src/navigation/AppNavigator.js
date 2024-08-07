@@ -1,6 +1,6 @@
+// AppNavigator.js
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createStackNavigator} from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import DiscoverScreen from '../modules/discover/DiscoverScreen';
@@ -8,7 +8,6 @@ import ThirdScreen from '../modules/third/ThirdScreen';
 import ProfileScreen from '../modules/profile/ProfileScreen';
 
 import HomeStack from '../modules/home/HomeStack';
-import CustomHeaderTitle from '../components/CustomHeaderTitle';
 
 const Tab = createBottomTabNavigator();
 
@@ -41,31 +40,19 @@ function AppNavigator() {
         },
       })}>
       <Tab.Screen
-        name="Home"
+        name="HomeStack"
         component={HomeStack}
-        // options={{
-        //   headerTitle: 'App name',
-        //   headerStyle: {
-        //     backgroundColor: '#fff', // White background
-        //   },
-        //   headerTitleStyle: {
-        //     fontWeight: 'bold',
-        //     alignSelf: 'center', // Center the title
-        //   },
-        //   headerTintColor: '#000', // Black text color
-        // }
         options={{headerShown: false}}
       />
       <Tab.Screen
         name="Discover"
         component={DiscoverScreen}
         options={{
-          headerLeft: () => <CustomHeaderTitle />, // Use the custom header title component
           headerStyle: {
-            backgroundColor: '#FFFFFF', // White background
-            height: 80, // Adjust the height to your preference
+            backgroundColor: '#FFFFFF',
+            height: 80,
           },
-          headerTintColor: '#2D313B', // Black text color
+          headerTintColor: '#2D313B',
         }}
       />
       <Tab.Screen
@@ -74,13 +61,13 @@ function AppNavigator() {
         options={{
           headerTitle: 'App name',
           headerStyle: {
-            backgroundColor: '#fff', // White background
+            backgroundColor: '#fff',
           },
           headerTitleStyle: {
             fontWeight: 'bold',
-            alignSelf: 'center', // Center the title
+            alignSelf: 'center',
           },
-          headerTintColor: '#000', // Black text color
+          headerTintColor: '#000',
         }}
       />
       <Tab.Screen
@@ -89,13 +76,13 @@ function AppNavigator() {
         options={{
           headerTitle: 'App name',
           headerStyle: {
-            backgroundColor: '#fff', // White background
+            backgroundColor: '#fff',
           },
           headerTitleStyle: {
             fontWeight: 'bold',
-            alignSelf: 'center', // Center the title
+            alignSelf: 'center',
           },
-          headerTintColor: '#000', // Black text color
+          headerTintColor: '#000',
         }}
       />
     </Tab.Navigator>

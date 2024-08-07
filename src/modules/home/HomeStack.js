@@ -1,11 +1,10 @@
+// HomeStack.js
 import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 import HomeScreen from './HomeScreen';
 import ChatScreen from '../chat/ChatScreen';
-import CustomHeaderTitle from '../../components/CustomHeaderTitle';
+import ThreadsScreen from '../chat/ThreadsScreen';
 
 const Stack = createStackNavigator();
 
@@ -16,26 +15,28 @@ function HomeStack() {
         name="Home"
         component={HomeScreen}
         options={{
-          headerTitle: () => <CustomHeaderTitle />, // Use the custom header title component
           headerStyle: {
-            backgroundColor: '#FFFFFF', // White background
-            height: 80, // Adjust the height to your preference
+            backgroundColor: '#FFFFFF',
+            height: 80,
           },
-          headerTintColor: '#2D313B', // Black text color
+          headerTintColor: '#2D313B',
         }}
       />
       <Stack.Screen
         name="Chat"
         component={ChatScreen}
         options={{
-          headerTitle: 'Speaker AI',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Threads"
+        component={ThreadsScreen}
+        options={{
           headerBackTitleVisible: false,
           headerTintColor: '#000',
           headerStyle: {backgroundColor: '#f1f1f1'},
           headerTitleStyle: {fontWeight: 'bold'},
-          headerLeft: props => (
-            <Icon name="arrow-back-outline" size={24} color="#000" {...props} />
-          ),
         }}
       />
     </Stack.Navigator>

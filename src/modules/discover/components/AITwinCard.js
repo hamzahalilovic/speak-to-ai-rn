@@ -1,7 +1,7 @@
 import React from 'react';
 import {Box, VStack, Avatar, Text, Button} from 'native-base';
 
-const AITwinCard = ({name, description, onChatPress}) => {
+const AITwinCard = ({name, description, onChatPress, avatar}) => {
   return (
     <Box
       bg="#f2f2f2" // Background color for the card
@@ -12,11 +12,7 @@ const AITwinCard = ({name, description, onChatPress}) => {
       width="100%"
       maxWidth="300px" // Max width for the card
     >
-      <Avatar
-        size="lg"
-        bg="#2d2d2d" // Background color for avatar
-        mb="12px"
-      />
+      <Avatar size={65} source={{uri: avatar}} mb="12px" bg="transparent" />
       <Text fontWeight="bold" fontSize="16px" mb="4px">
         {name}
       </Text>

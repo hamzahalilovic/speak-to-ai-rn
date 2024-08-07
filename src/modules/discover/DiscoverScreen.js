@@ -14,11 +14,36 @@ const DiscoverScreen = () => {
 
   // Mocked data for AI Twins
   const aiTwins = [
-    {id: 'markus', name: 'AI Twin Markus', description: 'About Markus AI'},
-    {id: 'jouko', name: 'AI Twin Jouko', description: 'About Jouko AI'},
-    {id: 'valto', name: 'AI Twin Valto', description: 'About Valto AI'},
-    {id: 'valto', name: 'AI Twin Valto', description: 'About Valto AI'},
-    // Add more AI twins as needed
+    {
+      id: 'markus',
+      name: 'Markus AI',
+      description: 'About Markus AI',
+      avatar:
+        'https://s3.us-east-1.amazonaws.com/cdn.speak-to.ai/avatars/markus.png',
+      knowledgebaseId: '90c6c52a-007c-4d71-a422-3a5d4dd1e4df',
+    },
+    {
+      id: 'valto',
+      name: 'Valto AI',
+      description: 'About Valto AI',
+      avatar:
+        'https://s3.us-east-1.amazonaws.com/cdn.speak-to.ai/avatars/valto.png',
+    },
+    {
+      id: 'jouko',
+      name: 'Jouko AI',
+      description: 'About Jouko AI',
+      avatar:
+        'https://s3.us-east-1.amazonaws.com/cdn.speak-to.ai/avatars/jouko.png',
+    },
+
+    {
+      id: 'johanna',
+      name: 'Johanna AI',
+      description: 'About Johanna AI',
+      avatar:
+        'https://s3.us-east-1.amazonaws.com/cdn.speak-to.ai/avatars/johanna.png',
+    },
   ];
 
   // Filtered AI Twins based on search query
@@ -46,6 +71,7 @@ const DiscoverScreen = () => {
         renderItem={({item}) => (
           <View style={styles.cardWrapper}>
             <AITwinCard
+              avatar={item.avatar}
               name={item.name}
               description={item.description}
               onChatPress={() => {
@@ -66,6 +92,7 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#fff',
     paddingHorizontal: 35,
+    height: '100%',
   },
   searchBar: {
     height: 40,

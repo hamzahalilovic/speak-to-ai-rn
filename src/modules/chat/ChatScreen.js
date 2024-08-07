@@ -23,16 +23,6 @@ import autosize from 'autosize';
 
 import {clientInit} from '../../utils/getInit';
 
-import {
-  // ChatlogContainer,
-  CustomFooter,
-  CustomSidebar,
-  CustomSlide,
-  // QuestionCard,
-  SidebarOpenButton,
-  // AnswerCard,
-} from '../../components/index';
-
 import AnswerCard from './components/AnswerCard';
 import QuestionCard from './components/QuestionCard';
 import ChatlogContainer from './components/ChatlogContainer';
@@ -81,6 +71,8 @@ import {
 import {useNavigation, useRoute} from '@react-navigation/native';
 import ChatInput from './components/ChatInput';
 import {useAppContext} from '../../context/AppContext';
+import CustomHeader from './components/CustomHeader';
+import {getThreads, saveThread, saveThreads} from './utils/threadsStorage';
 
 // remove this when has better way to do this
 function ConditionalToast({shouldShowToast, speaker}) {
@@ -133,8 +125,6 @@ const ChatScreen = () => {
 
   const [error, setError] = useState('w');
 
-  const isMobile = width < 768;
-
   const {width, height} = useWindowDimensions();
 
   const scrollSpan = useRef();
@@ -179,31 +169,6 @@ const ChatScreen = () => {
 
   const messagesRef = useRef(null);
   const messagesContainerRef = useRef(null);
-
-  // useEffect(() => {
-  //   const checkHeight = () => {
-  //     if (messagesRef.current && messagesContainerRef.current) {
-  //       const messagesHandle = findNodeHandle(messagesRef.current);
-  //       const messagesContainerHandle = findNodeHandle(
-  //         messagesContainerRef.current,
-  //       );
-
-  //       UIManager.measure(messagesHandle, (x, y, width, height) => {
-  //         const messagesHeight = height;
-
-  //         UIManager.measure(messagesContainerHandle, (x, y, width, height) => {
-  //           const messagesContainerHeight = height;
-
-  //           if (messagesHeight > messagesContainerHeight) {
-  //             setShiftTop(true);
-  //           }
-  //         });
-  //       });
-  //     }
-  //   };
-
-  //   checkHeight();
-  // }, [messageList]);
 
   const [textData, setTextData] = useState({});
   const {
@@ -322,46 +287,23 @@ const ChatScreen = () => {
 
   console.log('statement1', statement);
 
-  useEffect(() => {
-    if (haveAnswer) {
-      // statement.current.blur(); // blur the TextInput to indicate it's disabled
-      setStatus('ready');
-      scrollViewRef.current.scrollToEnd({animated: true});
-      statement.current.focus();
-      inputValue.focus();
-    }
-  }, [haveAnswer]);
-
   // useEffect(() => {
-  //   const handleOrientationChange = () => {
-  //     setTimeout(() => {
-  //       if (scrollSpan2.current) {
-  //         scrollSpan2.current.scrollIntoView({
-  //           behavior: 'auto',
-  //           block: 'end',
-  //           inline: 'nearest',
-  //         });
-  //       }
+  //   if (haveAnswer) {
+  //     // statement.current.blur(); // blur the TextInput to indicate it's disabled
+  //     setStatus('ready');
+  //     scrollViewRef.current.scrollToEnd({animated: true});
+  //     statement.current.focus();
+  //     // inputValue.focus();
+  //   }
+  // }, [haveAnswer]);
 
-  //       if (!scrollSpan2.current && scrollSpan.current) {
-  //         scrollSpan.current.scrollIntoView({
-  //           behavior: 'auto',
-  //           block: 'end',
-  //           inline: 'nearest',
-  //         });
-  //       }
-  //     }, 300);
-  //   };
-
-  //   const subscription = Dimensions.addEventListener(
-  //     'change',
-  //     handleOrientationChange,
-  //   );
-
-  //   return () => {
-  //     subscription.remove();
-  //   };
-  // }, []);
+  useEffect(() => {
+    if (scrollViewRef.current) {
+      setTimeout(() => {
+        // scrollViewRef.current.scrollToEnd({animated: true});
+      }, 100); // A small delay ensures the layout updates before scrolling
+    }
+  }, [messageList]);
 
   const handleFeedbackClick = useCallback(
     async e => {
@@ -370,7 +312,8 @@ const ChatScreen = () => {
     [sessionID],
   );
 
-  const {selectedAI} = useAppContext(); // Access selected AI from context
+  const {selectedAI, currentThreadId, setCurrentThreadId, threads, setThreads} =
+    useAppContext(); // Access selected AI from context
 
   const [propsFetched, setPropsFetched] = useState(false); // State to track props fetching
   useEffect(() => {
@@ -380,7 +323,6 @@ const ChatScreen = () => {
     console.log('API URL', API_URL);
 
     const fetchProps = async () => {
-
       setState({loading: true});
 
       try {
@@ -550,6 +492,7 @@ const ChatScreen = () => {
        queryActive.current = false;
  
      } */
+
     const getAnswer = async (
       chunks,
       scores,
@@ -674,7 +617,7 @@ const ChatScreen = () => {
         const updatedMessageList = [...messageList];
         updatedMessageList[msgIndex][1].streaming = false;
         setHaveAnswer(true);
-        //queryActive.current = false;
+
         setQueryActive(false);
         statement.current.value = '';
         setInputValue('');
@@ -733,6 +676,20 @@ const ChatScreen = () => {
       }
 
       setMessageList(updatedMessageList);
+
+      /////UPDATING THREADS LOCALLY AS SOON AS ANSWER IS RECEIVED
+      // Save the thread immediately after the answer is received
+
+      const updatedThreads = threads.map(thread =>
+        thread.id === currentThreadId
+          ? {...thread, messages: updatedMessageList}
+          : thread,
+      );
+
+      setThreads(updatedThreads);
+      await saveThreads(selectedAI.knowledgebaseId, updatedThreads); // Save updated threads to Async Storage
+
+      /////////////////////////////////
 
       updateUsedTokens({
         url,
@@ -898,17 +855,15 @@ const ChatScreen = () => {
   ]);
 
   console.log('session', sessionID);
+  console.log('threads', threads);
 
-  const handleNewMessage = text => {
-    console.log('NEW MSG REAL', inputValue, queryActive);
-    if (!queryActive) {
+  const handleNewMessage = async text => {
+    if (!queryActive && currentThreadId) {
       setRequestId();
       setStatus('processing');
-      setInputValue(tempInputValue); // Update inputValue state
-      setTempInputValue(''); // Clear the temporary input value
+      setInputValue(tempInputValue);
+      setTempInputValue('');
       uniqueId.current = generateUniqueId();
-
-      console.log('generate unique id', uniqueId.current);
 
       const userChat = {
         value: text,
@@ -918,29 +873,79 @@ const ChatScreen = () => {
       const aiChat = {
         uniqueId: uniqueId.current,
         answer: '',
-        streaming: true,
+        streaming: true, // initially set to true
       };
 
-      setState({
-        isUpdated: false,
-      });
+      const updatedMessages = [
+        ...messageList,
+        [userChat, aiChat, uniqueId.current],
+      ];
+      setMessageList(updatedMessages);
+
+      // Update the current thread with the new messages
+      const updatedThreads = threads.map(thread =>
+        thread.id === currentThreadId
+          ? {...thread, messages: updatedMessages}
+          : thread,
+      );
+
+      setThreads(updatedThreads);
+      saveThreads(selectedAI.knowledgebaseId, updatedThreads); // CHECK LATER IF NEEDED
 
       setQueryActive(true);
       haveChunks.current = false;
-      setMessageList(prev => [...prev, [userChat, aiChat, uniqueId.current]]);
+    } else {
+      console.error('No currentThreadId, query is active, or text is empty');
     }
   };
 
-  // if (state.loading && !state.errors) {
-  //   return (
-  //     <Center flex={1} zIndex={9999}>
-  //       <Spinner size="lg" />
-  //     </Center>
-  //   );
-  // }
+  const handleNewThread = async () => {
+    const newThreadId = generateUniqueId();
+    const newThread = {
+      id: newThreadId,
+      title: `Thread ${new Date().toLocaleString()}`,
+      messages: [],
+    };
+
+    const isDuplicate = threads.some(thread => thread.id === newThreadId);
+    if (!isDuplicate) {
+      const updatedThreads = [...threads, newThread];
+      setThreads(updatedThreads);
+      setCurrentThreadId(newThreadId);
+      setMessageList([]);
+      scrollViewRef.current?.scrollTo({y: 0, animated: true});
+      await saveThreads(selectedAI.knowledgebaseId, updatedThreads); // Save new thread to Async Storage
+    } else {
+      console.warn('Duplicate thread creation attempted');
+    }
+  };
+  useEffect(() => {
+    const fetchThreads = async () => {
+      const loadedThreads = await getThreads(selectedAI.knowledgebaseId);
+      setThreads(loadedThreads);
+
+      if (loadedThreads.length > 0) {
+        if (currentThreadId) {
+          const selectedThread = loadedThreads.find(
+            thread => thread.id === currentThreadId,
+          );
+          setMessageList(selectedThread?.messages || []);
+        } else {
+          const firstThreadId = loadedThreads[0].id;
+          setCurrentThreadId(firstThreadId);
+          setMessageList(loadedThreads[0].messages);
+        }
+      } else {
+        handleNewThread(); // Safely create a new thread if none exist
+      }
+    };
+
+    fetchThreads();
+  }, [selectedAI, currentThreadId]);
+
+  console.log('route params', route.params);
 
   console.log('state', state);
-  console.log('statement 3', statement);
 
   console.log('inputvalue', inputValue);
 
@@ -948,46 +953,33 @@ const ChatScreen = () => {
 
   console.log('currentUser', currentUser);
 
-  // console.log(
-  //   'store,',
-  //   currentUser,
-  //   setCurrentUser,
-  //   requestId,
-  //   setRequestId,
-  //   url,
-  //   sessionID,
-  //   language,
-  //   scoreLimit,
-  //   example,
-  //   setExample,
-  //   isFooterRendered,
-  //   setIsFooterRendered,
-  //   queryActive,
-  //   setQueryActive,
-  //   summary,
-  //   setSummary,
-  //   lastGoodAnswer,
-  //   setLastGoodAnswer,
-  //   models,
-  //   defaultModel,
-  //   currentTopic,
-  //   setCurrentTopic,
-  //   getDisclaimerStatus,
-  //   setDisclaimerStatus,
-  //   getAIConfig,
-  //   setAIConfig,
-  // );
-  // /speak-to.png
+  console.log('threads in cha screen', threads);
+
   return (
-    <ScrollView ref={scrollViewRef} style={{flex: 1}}>
-      <ChatlogContainer sidebarShown={sidebarShown}>
-        {state.loading ? (
-          <Center flex={1}>
-            <Spinner size="lg" />
-          </Center>
-        ) : (
-          <>
-            {!state.errors && (
+    <View style={{flex: 1, backgroundColor: '#f5f5f5', width: '100%'}}>
+      {/* <CustomHeader handleNewThread={handleNewThread} /> */}
+      <CustomHeader
+        knowledgebaseId={knowledgebase.knowledgebaseId}
+        name={knowledgebase.name}
+        handleNewThread={handleNewThread}
+        isNewThreadDisabled={messageList.length === 0}
+      />
+      {state.loading ? (
+        <Center flex={1}>
+          <Spinner size="lg" />
+        </Center>
+      ) : state.errors ? (
+        <Alert status="error">Invalid username</Alert>
+      ) : (
+        <>
+          <ScrollView
+            ref={scrollViewRef}
+            style={{flex: 1}}
+            contentContainerStyle={{paddingBottom: 80, width: '100%'}} // Ensure there's enough space for the ChatInput
+          >
+            <ChatlogContainer
+              sidebarShown={sidebarShown}
+              style={{width: '100%'}}>
               <HStack gap="0px" width="100%" height="100%">
                 <VStack
                   h="100%"
@@ -996,43 +988,25 @@ const ChatScreen = () => {
                   mb="-10px"
                   space={1}
                   color="black">
-                  <Box>
-                    <Header isMobile={isMobile} />
-                  </Box>
                   <Flex
                     ref={messagesContainerRef}
                     id="messages_container"
-                    flex={1}
-                    overflowX="visible">
-                    <Text id="messages" ref={messagesRef}>
-                      <Box height="130px">
-                        <Box height="100px" backgroundColor="#e2e2e2" />
-                        <Box
-                          height="30px"
-                          marginTop="-30px"
-                          backgroundColor="white"
-                          borderTopLeftRadius="30px"
-                          borderTopRightRadius="30px"
-                        />
-                      </Box>
-                      <Box padding="24px" paddingBottom="0px">
-                        {/* {!state.isUpdated && (
-                      <Box>
-                        <WelcomeContainer
-                          isMobile={isMobile}
-                          data={knowledgebase.current}
-                          asPartOfConvo
-                        />
-                      </Box>
-                    )} */}
+                    style={{flex: 1, width: '100%'}}>
+                    <Box
+                      id="messages"
+                      ref={messagesRef}
+                      style={{
+                        flex: 1,
 
+                        width: '100%',
+                      }}>
+                      <Box padding="24px" paddingBottom="0px">
                         {messageList.map((message, key) => (
                           <Box
                             key={`chats-${key}`}
                             className="messageContainer">
                             <QuestionCard
                               key={`question-${key}`}
-                              isMobile={isMobile}
                               message={message[0]}
                             />
                             <AnswerCard
@@ -1040,11 +1014,9 @@ const ChatScreen = () => {
                               message={message[1]}
                               knowledgeBase={knowledgebase}
                               language={language}
-                              isMobile={isMobile}
                             />
                           </Box>
                         ))}
-
                         <Text
                           style={{
                             height: '10px',
@@ -1055,38 +1027,32 @@ const ChatScreen = () => {
                           id="scroll-marker"
                         />
                       </Box>
-                    </Text>
+                    </Box>
                   </Flex>
-                  <Box padding="20px" paddingTop="0px">
-                    {/* {knowledgebase.current['test-mode'] && (
-                  <Box p={5} w="50%">
-                    <Alert status="warning">
-                      <AlertIcon />
-                      This is now in test mode.
-                    </Alert>
-                  </Box>
-                )} */}
-
-                    <ChatInput
-                      ref={statement}
-                      value={tempInputValue}
-                      onChangeText={setTempInputValue}
-                      onSubmitEditing={() => handleNewMessage(tempInputValue)}
-                      placeholder="Ask anything..."
-                    />
-                  </Box>
                 </VStack>
               </HStack>
-            )}
-            {state.errors && (
-              <>
-                <Alert status="error">Invalid username</Alert>
-              </>
-            )}
-          </>
-        )}
-      </ChatlogContainer>
-    </ScrollView>
+            </ChatlogContainer>
+          </ScrollView>
+          <Box
+            style={{
+              position: 'absolute',
+              bottom: 20,
+              left: 0,
+              right: 0,
+              zIndex: 9999,
+            }}>
+            <ChatInput
+              ref={statement}
+              value={tempInputValue}
+              onChangeText={setTempInputValue}
+              onSubmitEditing={() => handleNewMessage(tempInputValue)}
+              placeholder="Ask anything..."
+              editable={!queryActive}
+            />
+          </Box>
+        </>
+      )}
+    </View>
   );
 };
 
