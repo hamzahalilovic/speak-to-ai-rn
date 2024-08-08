@@ -64,6 +64,7 @@ import {
   Avatar,
   HStack,
   KeyboardAvoidingView,
+  Skeleton,
 } from 'native-base';
 
 import {
@@ -77,6 +78,8 @@ import ChatInput from './components/ChatInput';
 import {useAppContext} from '../../context/AppContext';
 import CustomHeader from './components/CustomHeader';
 import {getThreads, saveThread, saveThreads} from './utils/threadsStorage';
+import SkeletonAvatarDescription from './components/SkeletonAvatarDescription';
+import SkeletonAnswerCard from './components/SkeletonAnswerCard';
 
 // remove this when has better way to do this
 function ConditionalToast({shouldShowToast, speaker}) {
@@ -984,9 +987,7 @@ const ChatScreen = () => {
           isNewThreadDisabled={messageList.length === 0}
         />
         {state.loading ? (
-          <Center flex={1}>
-            <Spinner size="lg" />
-          </Center>
+          <SkeletonAvatarDescription />
         ) : state.errors ? (
           <Alert status="error">Invalid username</Alert>
         ) : (
@@ -994,67 +995,83 @@ const ChatScreen = () => {
             <ScrollView
               ref={scrollViewRef}
               style={{flex: 1}}
-              contentContainerStyle={{paddingBottom: 80, width: '100%'}} // Ensure there's enough space for the ChatInput
-            >
-              <ChatlogContainer
-                sidebarShown={sidebarShown}
-                style={{width: '100%'}}>
-                <HStack gap="0px" width="100%" height="100%">
-                  <VStack
-                    h="100%"
-                    w="100%"
-                    mt="-20px"
-                    mb="-10px"
-                    space={1}
-                    color="black">
-                    <Flex
-                      ref={messagesContainerRef}
-                      id="messages_container"
-                      style={{flex: 1, width: '100%'}}>
-                      <Box
-                        id="messages"
-                        ref={messagesRef}
-                        style={{
-                          flex: 1,
+              contentContainerStyle={{paddingBottom: 80, width: '100%'}}>
+              {messageList.length === 0 ? (
+                <Center
+                  style={{
+                    paddingHorizontal: 24,
+                    paddingTop: 32,
+                  }}>
+                  <Avatar
+                    size="2xl"
+                    source={{uri: knowledgebase.avatar}}
+                    mb="4"
+                    bg="transparent"
+                  />
+                  <Text fontSize="sm" color="gray.500" textAlign="center">
+                    {knowledgebase.description}
+                  </Text>
+                </Center>
+              ) : (
+                <ChatlogContainer
+                  sidebarShown={sidebarShown}
+                  style={{width: '100%'}}>
+                  <HStack gap="0px" width="100%" height="100%">
+                    <VStack
+                      h="100%"
+                      w="100%"
+                      mt="-20px"
+                      mb="-10px"
+                      space={1}
+                      color="black">
+                      <Flex
+                        ref={messagesContainerRef}
+                        id="messages_container"
+                        style={{flex: 1, width: '100%'}}>
+                        <Box
+                          id="messages"
+                          ref={messagesRef}
+                          style={{flex: 1, width: '100%'}}>
+                          <Box padding="24px" paddingBottom="0px">
+                            {messageList.map((message, key) => (
+                              <Box
+                                key={`chats-${key}`}
+                                className="messageContainer">
+                                <QuestionCard
+                                  key={`question-${key}`}
+                                  message={message[0]}
+                                />
 
-                          width: '100%',
-                        }}>
-                        <Box padding="24px" paddingBottom="0px">
-                          {messageList.map((message, key) => (
-                            <Box
-                              key={`chats-${key}`}
-                              className="messageContainer">
-                              <QuestionCard
-                                key={`question-${key}`}
-                                message={message[0]}
-                              />
-                              <AnswerCard
-                                knowledgeBase={knowledgebase}
-                                message={message[1]}
-                                isAdded={isAITwinAdded(
-                                  knowledgebase.knowledgebaseId,
-                                )}
-                                addAITwinToHome={addAITwinToHome}
-                                handleFeedbackClick={handleFeedbackClick}
-                                language={language}
-                              />
-                            </Box>
-                          ))}
-                          <Text
-                            style={{
-                              height: '10px',
-                              width: '100%',
-                              marginBottom: '25px',
-                            }}
-                            ref={scrollSpan}
-                            id="scroll-marker"
-                          />
+                                <AnswerCard
+                                  knowledgeBase={knowledgebase}
+                                  message={message[1]}
+                                  isAdded={isAITwinAdded(
+                                    knowledgebase.knowledgebaseId,
+                                  )}
+                                  addAITwinToHome={addAITwinToHome}
+                                  handleFeedbackClick={handleFeedbackClick}
+                                  language={language}
+                                />
+                              </Box>
+                            ))}
+                            {/* {queryActive && <SkeletonAnswerCard />} */}
+
+                            <Text
+                              style={{
+                                height: '10px',
+                                width: '100%',
+                                marginBottom: '25px',
+                              }}
+                              ref={scrollSpan}
+                              id="scroll-marker"
+                            />
+                          </Box>
                         </Box>
-                      </Box>
-                    </Flex>
-                  </VStack>
-                </HStack>
-              </ChatlogContainer>
+                      </Flex>
+                    </VStack>
+                  </HStack>
+                </ChatlogContainer>
+              )}
             </ScrollView>
             <Box
               style={{

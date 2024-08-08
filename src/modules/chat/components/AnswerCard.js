@@ -25,10 +25,7 @@ const AnswerCard = ({
         <Box flex={1}>
           <HStack justifyContent="space-between" alignItems="center">
             <Text fontSize="14px" fontWeight="bold">
-              {' '}
-              {knowledgeBase.title.includes('AI')
-                ? knowledgeBase.title.replace('AI', ' AI')
-                : knowledgeBase.title}
+              {knowledgeBase.title}
             </Text>
             <Button
               size="xs"

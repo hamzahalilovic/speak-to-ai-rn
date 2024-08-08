@@ -1,15 +1,6 @@
 import React from 'react';
-import {View, FlatList, Alert} from 'react-native';
-import {
-  Box,
-  HStack,
-  Text,
-  Avatar,
-  Menu,
-  Pressable,
-  Icon,
-  Button,
-} from 'native-base';
+import {View, FlatList, Alert, TouchableOpacity} from 'react-native';
+import {Box, HStack, Text, Avatar, Menu, Icon, Button} from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {useAppContext} from '../../context/AppContext';
@@ -57,55 +48,57 @@ const HomeScreen = () => {
         data={savedAITwins}
         keyExtractor={item => item.knowledgebaseId}
         renderItem={({item}) => (
-          <HStack
-            alignItems="center"
-            padding={4}
-            borderBottomWidth={1}
-            borderBottomColor="gray.200">
-            <Avatar source={{uri: item.avatar}} size="40px" mr={4} />
-            <Text fontSize="16px" flex={1}>
-              {item.name}
-            </Text>
-            <Menu
-              w="190"
-              trigger={triggerProps => {
-                return (
-                  <Pressable {...triggerProps}>
-                    <Icon as={Ionicons} name="ellipsis-vertical" size="lg" />
-                  </Pressable>
-                );
-              }}>
-              <Menu.Item onPress={() => handleShowInfo(item)}>
-                <HStack alignItems="center">
-                  <Icon
-                    as={Ionicons}
-                    name="information-circle"
-                    size="sm"
-                    mr={2}
-                  />
-                  <Text>Info</Text>
-                </HStack>
-              </Menu.Item>
-              <Menu.Item onPress={() => handleRemoveTwin(item.id)}>
-                <HStack alignItems="center">
-                  <Icon
-                    as={Ionicons}
-                    name="trash"
-                    size="sm"
-                    color="red.500"
-                    mr={2}
-                  />
-                  <Text color="red.500">Remove</Text>
-                </HStack>
-              </Menu.Item>
-              <Menu.Item onPress={() => handleChatPress(item)}>
-                <HStack alignItems="center">
-                  <Icon as={Ionicons} name="chatbubbles" size="sm" mr={2} />
-                  <Text>Chat</Text>
-                </HStack>
-              </Menu.Item>
-            </Menu>
-          </HStack>
+          <TouchableOpacity onPress={() => handleChatPress(item)}>
+            <HStack
+              alignItems="center"
+              padding={4}
+              borderBottomWidth={1}
+              borderBottomColor="gray.200">
+              <Avatar source={{uri: item.avatar}} size="40px" mr={4} />
+              <Text fontSize="16px" flex={1}>
+                {item.name}
+              </Text>
+              <Menu
+                w="190"
+                trigger={triggerProps => {
+                  return (
+                    <TouchableOpacity {...triggerProps}>
+                      <Icon as={Ionicons} name="ellipsis-vertical" size="lg" />
+                    </TouchableOpacity>
+                  );
+                }}>
+                <Menu.Item onPress={() => handleShowInfo(item)}>
+                  <HStack alignItems="center">
+                    <Icon
+                      as={Ionicons}
+                      name="information-circle"
+                      size="sm"
+                      mr={2}
+                    />
+                    <Text>Info</Text>
+                  </HStack>
+                </Menu.Item>
+                <Menu.Item onPress={() => handleRemoveTwin(item.id)}>
+                  <HStack alignItems="center">
+                    <Icon
+                      as={Ionicons}
+                      name="trash"
+                      size="sm"
+                      color="red.500"
+                      mr={2}
+                    />
+                    <Text color="red.500">Remove</Text>
+                  </HStack>
+                </Menu.Item>
+                <Menu.Item onPress={() => handleChatPress(item)}>
+                  <HStack alignItems="center">
+                    <Icon as={Ionicons} name="chatbubbles" size="sm" mr={2} />
+                    <Text>Chat</Text>
+                  </HStack>
+                </Menu.Item>
+              </Menu>
+            </HStack>
+          </TouchableOpacity>
         )}
       />
     </View>

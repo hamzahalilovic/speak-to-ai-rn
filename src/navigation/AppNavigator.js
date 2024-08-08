@@ -18,7 +18,7 @@ function AppNavigator() {
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
 
-          if (route.name === 'Home') {
+          if (route.name === 'HomeStack') {
             iconName = focused ? 'home' : 'home';
           } else if (route.name === 'Discover') {
             iconName = focused ? 'search' : 'search-outline';
@@ -42,7 +42,17 @@ function AppNavigator() {
       <Tab.Screen
         name="HomeStack"
         component={HomeStack}
-        options={{headerShown: false}}
+        options={{headerShown: false, tabBarLabel: 'Home'}}
+        // options={({route}) => {
+        //   const routeName = route;
+        //   const hideTabBar = routeName === 'Chat';
+        //   return {
+        //     headerShown: false,
+        //     tabBarStyle: hideTabBar ? {display: 'none'} : {},
+        //   };
+        //   {
+        //   }
+        // }}
       />
       <Tab.Screen
         name="Discover"
