@@ -1,15 +1,15 @@
 import React, {useState} from 'react';
 import {View, FlatList, StyleSheet, TextInput} from 'react-native';
-
-import {Text} from 'native-base';
+import {Text, Button, Icon} from 'native-base';
 import {useNavigation} from '@react-navigation/native';
 import AITwinCard from './components/AITwinCard';
-
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useAppContext} from '../../context/AppContext';
 
 const DiscoverScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const {setSelectedAI} = useAppContext();
+  const {setSelectedAI, addAITwinToHome, removeAITwinFromHome, isAITwinAdded} =
+    useAppContext();
   const navigation = useNavigation();
 
   // Mocked data for AI Twins
@@ -38,7 +38,6 @@ const DiscoverScreen = () => {
         'https://s3.us-east-1.amazonaws.com/cdn.speak-to.ai/avatars/jouko.png',
       knowledgebaseId: '7fdbc604-8eb4-43a1-82bd-4eafb60640ee',
     },
-
     {
       id: 'johanna',
       name: 'Johanna AI',
@@ -50,9 +49,17 @@ const DiscoverScreen = () => {
   ];
 
   // Filtered AI Twins based on search query
-  const filteredTwins = aiTwins.filter(twin =>
-    twin.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  // const filteredTwins = aiTwins.filter(twin =>
+  //   twin.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  // );
+
+  const handleAddOrRemoveTwin = twin => {
+    if (isAITwinAdded(twin.knowledgebaseId)) {
+      removeAITwinFromHome(twin.knowledgebaseId);
+    } else {
+      addAITwinToHome(twin);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -68,7 +75,7 @@ const DiscoverScreen = () => {
       />
       <FlatList
         style={{marginTop: 46}}
-        data={filteredTwins}
+        data={aiTwins}
         keyExtractor={item => item.id}
         numColumns={2}
         renderItem={({item}) => (
@@ -81,6 +88,8 @@ const DiscoverScreen = () => {
                 setSelectedAI(item);
                 navigation.navigate('Chat');
               }}
+              onAddOrRemove={() => handleAddOrRemoveTwin(item)}
+              isAdded={isAITwinAdded(item.knowledgebaseId)}
             />
           </View>
         )}
@@ -91,7 +100,6 @@ const DiscoverScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     padding: 16,
     backgroundColor: '#fff',
     paddingHorizontal: 35,
@@ -106,17 +114,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     marginTop: 26,
   },
-  grid: {
-    justifyContent: 'center',
-  },
-  row: {
-    justifyContent: 'space-between',
-  },
   cardWrapper: {
     flex: 1,
-    marginHorizontal: 6, // 12px total gap (6px each side)
+    marginHorizontal: 6,
     marginBottom: 12,
-    maxWidth: '48%', // Ensures 2 columns fit within the screen
+    maxWidth: '48%',
   },
 });
 

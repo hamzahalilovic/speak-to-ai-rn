@@ -1,7 +1,15 @@
 import React from 'react';
-import {Box, VStack, Avatar, Text, Button} from 'native-base';
+import {Box, VStack, Avatar, Text, Button, Icon, HStack} from 'native-base';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const AITwinCard = ({name, description, onChatPress, avatar}) => {
+const AITwinCard = ({
+  name,
+  description,
+  onChatPress,
+  avatar,
+  onAddOrRemove,
+  isAdded,
+}) => {
   return (
     <Box
       bg="#f2f2f2" // Background color for the card
@@ -19,13 +27,30 @@ const AITwinCard = ({name, description, onChatPress, avatar}) => {
       <Text fontSize="14px" color="#666" mb="12px" textAlign="center">
         {description}
       </Text>
-      <Button
-        bg="#2d2d2d" // Button background color
-        _text={{color: '#fff'}} // Button text color
-        onPress={onChatPress} // Handle press event
-      >
-        Chat
-      </Button>
+      <VStack space={3}>
+        <Button
+          bg="#2d2d2d" // Button background color
+          _text={{color: '#fff'}} // Button text color
+          onPress={onChatPress} // Handle press event
+        >
+          Chat
+        </Button>
+        <Button
+          size={'xs'}
+          bg={isAdded ? '#4CAF50' : '#f2f2f2'} // Change background color based on isAdded state
+          _text={{color: isAdded ? '#fff' : '#2D313B'}} // Change text color based on isAdded state
+          onPress={onAddOrRemove} // Handle add/remove event
+          disabled={isAdded} //
+          leftIcon={
+            isAdded ? (
+              <Icon as={Ionicons} name="checkmark" color="#fff" size="sm" />
+            ) : (
+              <Icon as={Ionicons} name="add" color="#2D313B" size="sm" />
+            )
+          }>
+          {isAdded ? 'Added' : 'Add AI'}
+        </Button>
+      </VStack>
     </Box>
   );
 };

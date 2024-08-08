@@ -316,8 +316,15 @@ const ChatScreen = () => {
     [sessionID],
   );
 
-  const {selectedAI, currentThreadId, setCurrentThreadId, threads, setThreads} =
-    useAppContext(); // Access selected AI from context
+  const {
+    selectedAI,
+    currentThreadId,
+    setCurrentThreadId,
+    threads,
+    setThreads,
+    addAITwinToHome,
+    isAITwinAdded,
+  } = useAppContext(); // Access selected AI from context
 
   const [propsFetched, setPropsFetched] = useState(false); // State to track props fetching
   useEffect(() => {
@@ -959,6 +966,9 @@ const ChatScreen = () => {
   console.log('currentUser', currentUser);
 
   console.log('threads in cha screen', threads);
+  console.log('knowledgebase', knowledgebase);
+
+  console.log('is twin added', isAITwinAdded(knowledgebase.name));
 
   return (
     <KeyboardAvoidingView
@@ -969,6 +979,7 @@ const ChatScreen = () => {
         <CustomHeader
           knowledgebaseId={knowledgebase.knowledgebaseId}
           name={knowledgebase.name}
+          avatar={knowledgebase.avatar}
           handleNewThread={handleNewThread}
           isNewThreadDisabled={messageList.length === 0}
         />
@@ -1018,9 +1029,13 @@ const ChatScreen = () => {
                                 message={message[0]}
                               />
                               <AnswerCard
-                                handleFeedbackClick={handleFeedbackClick}
-                                message={message[1]}
                                 knowledgeBase={knowledgebase}
+                                message={message[1]}
+                                isAdded={isAITwinAdded(
+                                  knowledgebase.knowledgebaseId,
+                                )}
+                                addAITwinToHome={addAITwinToHome}
+                                handleFeedbackClick={handleFeedbackClick}
                                 language={language}
                               />
                             </Box>
