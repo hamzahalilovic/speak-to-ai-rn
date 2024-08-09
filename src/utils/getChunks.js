@@ -1,7 +1,7 @@
 import {checkLanguage, translateWhenNeeded} from '../appConfig';
 
 import {fetchWithTimeout} from '../utils/index';
-import {MIDDLEWARE_API_URL, XMIDDLEWARE_API_URL, NEXTJS_API_URL} from '@env';
+import {MIDDLEWARE_API_URL} from '@env';
 
 export const getData = async (
   entry,

@@ -8,6 +8,7 @@ const CustomHeader = ({
   handleNewThread,
   name,
   isNewThreadDisabled,
+  avatar,
 }) => {
   const navigation = useNavigation();
 
@@ -32,7 +33,7 @@ const CustomHeader = ({
       {/* Buttons for Threads and New Thread */}
       <HStack space="2">
         <IconButton
-          icon={<Ionicons name="document-text" size={24} color="black" />}
+          icon={<Ionicons name="list" size={24} color="black" />}
           onPress={() => navigation.navigate('Threads', {knowledgebaseId})}
         />
         <IconButton

@@ -134,7 +134,7 @@ const ThreadsScreen = ({route}) => {
   console.log('threads in threads screen', threads);
 
   return (
-    <View style={{flex: 1, padding: 16}}>
+    <View style={{flex: 1, padding: 16, marginTop: 50}}>
       <FlatList
         data={threads}
         keyExtractor={item => item.id}

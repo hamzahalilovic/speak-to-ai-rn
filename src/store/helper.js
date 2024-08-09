@@ -10,6 +10,8 @@ import {Dimensions} from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import {NEXTJS_API_URL} from '@env';
+
 async function checkStorage() {
   let session = generateUniqueId();
   try {
@@ -50,7 +52,8 @@ async function aiConfigStorage(config) {
 }
 
 function getUrl() {
-  let url = 'http://localhost:3332/api/v1';
+  // let url = 'http://localhost:3332/api/v1';
+  let url = NEXTJS_API_URL;
   // if (typeof window !== 'undefined') {
   //   url = window.location.origin + '/api/v1';
   // }

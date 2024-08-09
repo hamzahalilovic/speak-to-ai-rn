@@ -15,11 +15,7 @@ function HomeStack() {
         name="Home"
         component={HomeScreen}
         options={{
-          headerStyle: {
-            backgroundColor: '#FFFFFF',
-            height: 80,
-          },
-          headerTintColor: '#2D313B',
+          headerShown: false,
         }}
       />
       <Stack.Screen
@@ -33,10 +29,7 @@ function HomeStack() {
         name="Threads"
         component={ThreadsScreen}
         options={{
-          headerBackTitleVisible: false,
-          headerTintColor: '#000',
-          headerStyle: {backgroundColor: '#f1f1f1'},
-          headerTitleStyle: {fontWeight: 'bold'},
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

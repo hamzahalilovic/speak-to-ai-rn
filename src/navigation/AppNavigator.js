@@ -4,10 +4,12 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import DiscoverScreen from '../modules/discover/DiscoverScreen';
-import ThirdScreen from '../modules/third/ThirdScreen';
+
+import QRCodeScannerScreen from '../modules/qr/QRCodeScannerScreen';
 import ProfileScreen from '../modules/profile/ProfileScreen';
 
 import HomeStack from '../modules/home/HomeStack';
+import ProfileStack from '../modules/profile/ProfileStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -21,16 +23,16 @@ function AppNavigator() {
           if (route.name === 'HomeStack') {
             iconName = focused ? 'home' : 'home';
           } else if (route.name === 'Discover') {
-            iconName = focused ? 'search' : 'search-outline';
-          } else if (route.name === 'Third') {
+            iconName = focused ? 'star' : 'star-outline';
+          } else if (route.name === 'QRCodeScanner') {
             iconName = focused ? 'qr-code' : 'qr-code-outline';
-          } else if (route.name === 'Profile') {
+          } else if (route.name === 'ProfileStack') {
             iconName = focused ? 'person' : 'person-outline';
           }
 
           return <Icon name={iconName} size={24} color={color} />;
         },
-        tabBarActiveTintColor: 'purple',
+        tabBarActiveTintColor: '#9682E8',
         tabBarInactiveTintColor: 'white',
         tabBarStyle: {
           backgroundColor: '#000',
@@ -43,57 +45,25 @@ function AppNavigator() {
         name="HomeStack"
         component={HomeStack}
         options={{headerShown: false, tabBarLabel: 'Home'}}
-        // options={({route}) => {
-        //   const routeName = route;
-        //   const hideTabBar = routeName === 'Chat';
-        //   return {
-        //     headerShown: false,
-        //     tabBarStyle: hideTabBar ? {display: 'none'} : {},
-        //   };
-        //   {
-        //   }
-        // }}
       />
       <Tab.Screen
         name="Discover"
         component={DiscoverScreen}
         options={{
-          headerStyle: {
-            backgroundColor: '#FFFFFF',
-            height: 80,
-          },
-          headerTintColor: '#2D313B',
+          headerShown: false,
         }}
       />
       <Tab.Screen
-        name="Third"
-        component={ThirdScreen}
+        name="QRCodeScanner"
+        component={QRCodeScannerScreen}
         options={{
-          headerTitle: 'App name',
-          headerStyle: {
-            backgroundColor: '#fff',
-          },
-          headerTitleStyle: {
-            fontWeight: 'bold',
-            alignSelf: 'center',
-          },
-          headerTintColor: '#000',
+          headerShown: false,
         }}
       />
       <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          headerTitle: 'App name',
-          headerStyle: {
-            backgroundColor: '#fff',
-          },
-          headerTitleStyle: {
-            fontWeight: 'bold',
-            alignSelf: 'center',
-          },
-          headerTintColor: '#000',
-        }}
+        name="ProfileStack"
+        component={ProfileStack}
+        options={{headerShown: false, tabBarLabel: 'Profile'}}
       />
     </Tab.Navigator>
   );

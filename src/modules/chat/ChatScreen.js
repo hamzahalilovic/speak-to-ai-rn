@@ -72,6 +72,7 @@ import {
   NEXT_PUBLIC_APP_DEV,
   APP_ID,
   MIDDLEWARE_API_URL,
+  XMIDDLEWARE_API_URL,
 } from '@env';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import ChatInput from './components/ChatInput';
@@ -331,9 +332,7 @@ const ChatScreen = () => {
 
   const [propsFetched, setPropsFetched] = useState(false); // State to track props fetching
   useEffect(() => {
-    const API_URL = `http://localhost:3001/api/v1/navigate${
-      selectedAI?.id || ''
-    }`;
+    const API_URL = `${XMIDDLEWARE_API_URL}navigate${selectedAI?.id || ''}`;
     console.log('API URL', API_URL);
 
     const fetchProps = async () => {
@@ -441,7 +440,7 @@ const ChatScreen = () => {
           },
           body: JSON.stringify(aiConfig),
         });
-
+        console.log('JSON AI CONFIG', JSON.stringify(aiConfig));
         console.log('checksum response', checksumResponse);
 
         if (!checksumResponse.ok) {
@@ -973,6 +972,34 @@ const ChatScreen = () => {
 
   console.log('is twin added', isAITwinAdded(knowledgebase.name));
 
+  // other states and refs...
+
+  const [contentHeight, setContentHeight] = useState(0);
+
+  // other states and refs...
+
+  // Handle manual scroll adjustment when new messages arrive
+  useEffect(() => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({
+        y: contentHeight - 100, // Adjust this value to control how much lower you want the scroll position to be
+        animated: true,
+      });
+    }
+  }, [contentHeight, messageList]);
+
+  // Handle initial load scroll
+  useEffect(() => {
+    if (scrollViewRef.current) {
+      setTimeout(() => {
+        scrollViewRef.current.scrollTo({
+          y: contentHeight - 100, // Adjust this value to control initial scroll position
+          animated: true,
+        });
+      }, 100); // A small delay ensures the layout updates before scrolling
+    }
+  }, [contentHeight]);
+
   return (
     <KeyboardAvoidingView
       style={{flex: 1, backgroundColor: '#f5f5f5', width: '100%'}}
@@ -981,7 +1008,7 @@ const ChatScreen = () => {
         {/* <CustomHeader handleNewThread={handleNewThread} /> */}
         <CustomHeader
           knowledgebaseId={knowledgebase.knowledgebaseId}
-          name={knowledgebase.name}
+          name={knowledgebase.title}
           avatar={knowledgebase.avatar}
           handleNewThread={handleNewThread}
           isNewThreadDisabled={messageList.length === 0}
@@ -994,6 +1021,9 @@ const ChatScreen = () => {
           <>
             <ScrollView
               ref={scrollViewRef}
+              onContentSizeChange={(contentWidth, contentHeight) => {
+                setContentHeight(contentHeight); // Track the content height
+              }}
               style={{flex: 1}}
               contentContainerStyle={{paddingBottom: 80, width: '100%'}}>
               {messageList.length === 0 ? (
