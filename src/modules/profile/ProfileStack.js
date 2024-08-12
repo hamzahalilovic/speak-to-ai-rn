@@ -7,7 +7,7 @@ import PaymentScreen from './PaymentScreen'; // Replace with your actual screen
 // import AccountSettingsScreen from './AccountSettingsScreen'; // Replace with your actual screen
 // import HelpSupportScreen from './HelpSupportScreen'; // Replace with your actual screen
 
-
+import PresetAITwinsScreen from './PresetAITwinsScreen';
 
 const Stack = createStackNavigator();
 
@@ -21,6 +21,7 @@ function ProfileStack() {
       />
       {/* <Stack.Screen name="ChangeTheme" component={ChangeThemeScreen} /> */}
       <Stack.Screen name="Payment" component={PaymentScreen} />
+      <Stack.Screen name="PresetAITwins" component={PresetAITwinsScreen} />
       {/* <Stack.Screen name="Notifications" component={NotificationsScreen} />
       <Stack.Screen name="AccountSettings" component={AccountSettingsScreen} />
       <Stack.Screen name="HelpSupport" component={HelpSupportScreen} /> */}

@@ -10,6 +10,7 @@ const ProfileScreen = ({navigation}) => {
     {label: 'Notifications', icon: 'notifications', screen: 'Notifications'},
     {label: 'Account Settings', icon: 'settings', screen: 'AccountSettings'},
     {label: 'Help & Support', icon: 'help-circle', screen: 'HelpSupport'},
+    {label: 'Preset AI Twins', icon: 'help-circle', screen: 'PresetAITwins'},
   ];
 
   return (
@@ -20,7 +21,7 @@ const ProfileScreen = ({navigation}) => {
       </Text>
 
       <VStack space={4}>
-        {/* {settingsItems.map(item => (
+        {settingsItems.map(item => (
           <TouchableOpacity
             key={item.label}
             onPress={() => navigation.navigate(item.screen)}>
@@ -34,7 +35,7 @@ const ProfileScreen = ({navigation}) => {
               <Text fontSize="16px">{item.label}</Text>
             </HStack>
           </TouchableOpacity>
-        ))} */}
+        ))}
       </VStack>
     </View>
   );

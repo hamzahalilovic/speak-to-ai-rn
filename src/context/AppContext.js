@@ -1,6 +1,8 @@
 import React, {createContext, useContext, useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import {getPresetAITwins} from '../modules/discover/utils/aiTwinsStorage';
+
 const AppContext = createContext();
 
 export const AppContextProvider = ({children}) => {
@@ -8,6 +10,8 @@ export const AppContextProvider = ({children}) => {
   const [threads, setThreads] = useState([]);
   const [currentThreadId, setCurrentThreadId] = useState(null);
   const [savedAITwins, setSavedAITwins] = useState([]);
+  const [aiTwinsDiscovered, setAiTwinsDiscovered] = useState([]);
+  const [aiTwinsPreset, setAiTwinsPreset] = useState([]);
 
   useEffect(() => {
     // Load saved AI twins from AsyncStorage on app start
@@ -43,6 +47,22 @@ export const AppContextProvider = ({children}) => {
     );
   };
 
+  // Add this inside your useEffect to load preset AI twins
+  useEffect(() => {
+    const loadPresetAITwins = async () => {
+      try {
+        const presetTwins = await getPresetAITwins();
+        setAiTwinsPreset(presetTwins);
+      } catch (error) {
+        console.error('Failed to load preset AI twins', error);
+      }
+    };
+
+    loadPresetAITwins();
+  }, []);
+
+  console.log('aitwinspreset appcontext', aiTwinsPreset);
+
   return (
     <AppContext.Provider
       value={{
@@ -56,6 +76,10 @@ export const AppContextProvider = ({children}) => {
         addAITwinToHome,
         removeAITwinFromHome,
         isAITwinAdded,
+        aiTwinsDiscovered,
+        setAiTwinsDiscovered,
+        aiTwinsPreset,
+        setAiTwinsPreset,
       }}>
       {children}
     </AppContext.Provider>
