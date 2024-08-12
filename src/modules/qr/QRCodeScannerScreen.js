@@ -1,63 +1,63 @@
-// import React from 'react';
-// import {Alert, StyleSheet, View} from 'react-native';
-// import QRCodeScanner from 'react-native-qrcode-scanner';
-// import {RNCamera} from 'react-native-camera';
-// import {Text} from 'native-base';
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
+import {
+  Camera,
+  useCameraDevice,
+  useCameraPermission,
+  useCodeScanner,
+} from 'react-native-vision-camera';
 
-// const QRCodeScannerScreen = ({navigation}) => {
-//   const onSuccess = e => {
-//     Alert.alert('QR Code Scanned', `Value: ${e.data}`, [
-//       {
-//         text: 'OK',
-//         onPress: () => navigation.goBack(),
-//       },
-//     ]);
-//   };
+import DeviceInfo from 'react-native-device-info';
 
-//   return (
-//     <View style={{flex: 1}}>
-//       <QRCodeScanner
-//         onRead={onSuccess}
-//         flashMode={RNCamera.Constants.FlashMode.off}
-//         topContent={
-//           <Text fontSize={18} fontWeight="bold" mb={4}>
-//             Scan the QR code
-//           </Text>
-//         }
-//         bottomContent={
-//           <Text fontSize={14} color="gray.500">
-//             Align the QR code within the frame to scan
-//           </Text>
-//         }
-//         containerStyle={styles.container}
-//         cameraStyle={styles.camera}
-//       />
-//     </View>
-//   );
-// };
+const QRCodeScannerScreen = () => {
+  // Fix for simulators, remove after upgrade to new version of `react-native-vision-camera`
+  const useGetCameraDevice = DeviceInfo.isEmulatorSync()
+    ? () => undefined
+    : useCameraDevice;
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#000',
-//   },
-//   camera: {
-//     height: '100%',
-//   },
-// });
+  const device = useGetCameraDevice('back');
+  const {hasPermission, requestPermission} = useCameraPermission();
+  const [qrCodeData, setQrCodeData] = useState(null);
 
-// export default QRCodeScannerScreen;
-import React from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
+  useEffect(() => {
+    if (!hasPermission) {
+      requestPermission();
+    }
+  }, [hasPermission, requestPermission]);
 
-import {Text} from 'native-base';
+  const codeScanner = useCodeScanner({
+    codeTypes: ['qr', 'ean-13'],
+    onCodeScanned: codes => {
+      codes.forEach(code => {
+        console.log('QR Code detected:', code);
+        setQrCodeData(code.value);
+      });
+    },
+  });
 
-const QRCodeScannerScreen = ({navigation}) => {
+  if (!device || !hasPermission) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading camera...</Text>
+      </View>
+    );
+  }
+
+  console.log('QRCodeScannerScreen', qrCodeData);
+
   return (
-    <View style={{flex: 1, padding: 16, paddingTop: 55}}>
-      <Text fontSize={24} fontWeight={600} lineHeight={33} mb={4}>
-        QR Code Scan
-      </Text>
+    <View style={styles.container}>
+      <Camera
+        style={StyleSheet.absoluteFill}
+        device={device}
+        isActive={true}
+        codeScanner={codeScanner}
+      />
+      {qrCodeData && (
+        <View style={styles.qrCodeContainer}>
+          <Text style={styles.qrCodeText}>QR Code Data: {qrCodeData}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -65,10 +65,20 @@ const QRCodeScannerScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#000',
   },
-  camera: {
-    height: '100%',
+  qrCodeContainer: {
+    position: 'absolute',
+    bottom: 20,
+    padding: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 8,
+  },
+  qrCodeText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });
 

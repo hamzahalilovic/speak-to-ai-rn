@@ -2,7 +2,6 @@
 import {
   NEXT_PUBLIC_APP_ID,
   MIDDLEWARE_API_URL,
-  XMIDDLEWARE_API_URL,
 } from '@env';
 
 export const clientInit = async (fetchWithTimeout, options) => {

@@ -40,7 +40,8 @@ const HomeScreen = () => {
   };
 
   return (
-    <View style={{flex: 1, padding: 16, marginTop: 50}}>
+    <View
+      style={{flex: 1, padding: 16, paddingTop: 55, backgroundColor: '#fff'}}>
       <Text fontSize={24} fontWeight={600} lineHeight={33} mb={4}>
         Your AI’s
       </Text>
