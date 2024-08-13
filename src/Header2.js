@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, IconButton, HStack} from 'native-base';
+import {Box, IconButton, HStack} from '@gluestack-ui/themed-native-base';
 import {headerOptions} from './appConfig';
 
 const Header = ({onClose, onOpen, isOpen = false, isMobile, ...props}) => {

@@ -1,6 +1,14 @@
 import React from 'react';
 import {View, FlatList, Alert, TouchableOpacity} from 'react-native';
-import {Box, HStack, Text, Avatar, Menu, Icon, Button} from 'native-base';
+import {
+  Box,
+  HStack,
+  Text,
+  Avatar,
+  Menu,
+  Icon,
+  Button,
+} from '@gluestack-ui/themed-native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {useAppContext} from '../../context/AppContext';
@@ -42,9 +50,7 @@ const HomeScreen = () => {
   return (
     <View
       style={{flex: 1, padding: 16, paddingTop: 55, backgroundColor: '#fff'}}>
-      <Text fontSize={24} fontWeight={600} lineHeight={33} mb={4}>
-        Your AI’s
-      </Text>
+      <Text mb={4}>Your AI’s</Text>
       <FlatList
         data={savedAITwins}
         keyExtractor={item => item.knowledgebaseId}
@@ -56,8 +62,8 @@ const HomeScreen = () => {
               borderBottomWidth={1}
               borderBottomColor="gray.200">
               <Avatar source={{uri: item.avatar}} size="40px" mr={4} />
-              <Text fontSize="16px" flex={1}>
-                {item.name}
+              <Text fontSize={16} flex={1}>
+                {item.title}
               </Text>
               <Menu
                 w="190"
@@ -93,7 +99,7 @@ const HomeScreen = () => {
                 </Menu.Item>
                 <Menu.Item onPress={() => handleChatPress(item)}>
                   <HStack alignItems="center">
-                    <Icon as={Ionicons} name="chatbubbles" size="sm" mr={2} />
+                    {/* <Icon as={Ionicons} name="chatbubbles" size="sm" mr={2} /> */}
                     <Text>Chat</Text>
                   </HStack>
                 </Menu.Item>

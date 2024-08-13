@@ -1,5 +1,11 @@
 import React from 'react';
-import {Box, HStack, VStack, Skeleton, Avatar} from 'native-base';
+import {
+  Box,
+  HStack,
+  VStack,
+  Skeleton,
+  Avatar,
+} from '@gluestack-ui/themed-native-base';
 
 const SkeletonAnswerCard = () => {
   return (

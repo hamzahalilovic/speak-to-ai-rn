@@ -1,6 +1,12 @@
 import React, {useState} from 'react';
 import {View, FlatList, StyleSheet, TextInput, Alert} from 'react-native';
-import {Text, Button, VStack, Box, Pressable} from 'native-base';
+import {
+  Text,
+  Button,
+  VStack,
+  Box,
+  Pressable,
+} from '@gluestack-ui/themed-native-base';
 import {useNavigation} from '@react-navigation/native';
 import AITwinCard from './components/AITwinCard';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -79,7 +85,7 @@ const DiscoverScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text fontSize={24} fontWeight={600} lineHeight={33} mb={4}>
+      <Text fontSize={24} fontWeight={600}  mb={4}>
         Discover AI’s
       </Text>
       <TextInput

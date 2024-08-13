@@ -10,7 +10,7 @@ import {
   Pressable,
   Icon,
   Popover,
-} from 'native-base';
+} from '@gluestack-ui/themed-native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   getThreads,

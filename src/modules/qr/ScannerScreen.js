@@ -1,6 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
-import {Button, Text, Box, VStack, Input} from 'native-base';
+import {
+  Button,
+  Text,
+  Box,
+  VStack,
+  Input,
+} from '@gluestack-ui/themed-native-base';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HTMLParser from 'react-native-html-parser';
@@ -79,7 +85,7 @@ const ScannerScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text fontSize={24} fontWeight={600} lineHeight={33} mb={4}>
+      <Text fontSize={24} fontWeight={600} mb={4}>
         AI Twin Scanner
       </Text>
       <Button onPress={() => navigation.navigate('QRCodeScanner')} mb={4}>

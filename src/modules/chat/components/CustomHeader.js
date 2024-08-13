@@ -1,6 +1,11 @@
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {HStack, Button, Text, IconButton} from 'native-base';
+import {
+  HStack,
+  Button,
+  Text,
+  IconButton,
+} from '@gluestack-ui/themed-native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const CustomHeader = ({
@@ -26,7 +31,7 @@ const CustomHeader = ({
       />
 
       {/* AI Twin Name */}
-      <Text fontWeight="bold" fontSize="20px">
+      <Text fontWeight="bold" fontSize={20}>
         {name || 'AI Twin'}
       </Text>
 

@@ -6,7 +6,7 @@ import React from 'react';
 import {StyleSheet} from 'react-native';
 
 import MainNavigator from './src/navigation/MainNavigator';
-import {NativeBaseProvider} from 'native-base';
+import {NativeBaseProvider} from '@gluestack-ui/themed-native-base';
 
 import AppWrapper from './src/components/AppWrapper';
 

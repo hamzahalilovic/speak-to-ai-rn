@@ -65,7 +65,7 @@ import {
   HStack,
   KeyboardAvoidingView,
   Skeleton,
-} from 'native-base';
+} from '@gluestack-ui/themed-native-base';
 
 import {
   NEXT_PUBLIC_APP_ID,
@@ -85,34 +85,34 @@ import SkeletonAnswerCard from './components/SkeletonAnswerCard';
 import HTMLParser from 'react-native-html-parser';
 
 // remove this when has better way to do this
-function ConditionalToast({shouldShowToast, speaker}) {
-  const toast = useToast();
-  //const navigate = useNavigate();
-  const effectCalled = useRef(false);
-  useEffect(() => {
-    // console.log("HERE ", speaker, effectCalled.current);
-    // locally, the first round the page is not yet ready...
-    if (!effectCalled.current) {
-      effectCalled.current = true;
-      if (shouldShowToast) {
-        toast({
-          title: `Unknown Speaker [${speaker}]`,
-          description:
-            'Page will be automatically redirected to the Speak to page.',
-          status: 'error',
-          duration: 10000,
-          isClosable: true,
-          onCloseComplete: () => {
-            // window.location.href = links.speakTo;
-          },
-        });
-        //console.log("TOAST HERE...")
-      }
-    }
-  }, [shouldShowToast, speaker, toast]);
+// function ConditionalToast({shouldShowToast, speaker}) {
+//   const toast = useToast();
+//   //const navigate = useNavigate();
+//   const effectCalled = useRef(false);
+//   useEffect(() => {
+//     // console.log("HERE ", speaker, effectCalled.current);
+//     // locally, the first round the page is not yet ready...
+//     if (!effectCalled.current) {
+//       effectCalled.current = true;
+//       if (shouldShowToast) {
+//         toast({
+//           title: `Unknown Speaker [${speaker}]`,
+//           description:
+//             'Page will be automatically redirected to the Speak to page.',
+//           status: 'error',
+//           duration: 10000,
+//           isClosable: true,
+//           onCloseComplete: () => {
+//             // window.location.href = links.speakTo;
+//           },
+//         });
+//         //console.log("TOAST HERE...")
+//       }
+//     }
+//   }, [shouldShowToast, speaker, toast]);
 
-  return null;
-}
+//   return null;
+// }
 
 const ChatScreen = () => {
   const [props, setProps] = useState({});
@@ -341,33 +341,6 @@ const ChatScreen = () => {
     }`;
     console.log('API URL', API_URL);
 
-    // const fetchProps = async () => {
-    //   setState({loading: true});
-
-    //   try {
-    //     const response = await fetch(`${API_URL}`, {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //     });
-
-    //     if (!response.ok) {
-    //       throw new Error('Network response was not ok');
-    //     }
-    //     console.log('response', response);
-    //     const result = await response.json();
-    //     setProps(result);
-    //     // knowledgebase.current = result;
-    //     setKnowledgebase(result);
-    //     setPropsFetched(true); // Set to true after fetching is done
-    //   } catch (err) {
-    //     setError(err.message);
-    //     setPropsFetched(false); // Ensure it's false on error
-    //   } finally {
-    //     setState({loading: false});
-    //   }
-    // };
     const fetchProps = async () => {
       setState({loading: true});
 
@@ -411,7 +384,9 @@ const ChatScreen = () => {
     };
     // Trigger fetchProps whenever selectedAI changes
 
-    fetchProps();
+    if (!propsFetched) {
+      fetchProps(); // only fetch if data hasn't been fetched
+    }
   }, [selectedAI]); // Depend on selectedAI
   useEffect(() => {
     console.log('selectedAI', selectedAI);
@@ -524,35 +499,28 @@ const ChatScreen = () => {
       init();
     }
   }, [
-    propsFetched,
-    username,
-    toast,
-    sessionID,
-    url,
-    setCurrentUser,
-    language,
-    setExample,
-    setSummary,
-    showDisclaimerToast,
-    setAIConfig,
-    defaultModel,
-    knowledgebase,
+    // propsFetched,
+    // username,
+    // toast,
+    // sessionID,
+    // url,
+    // setCurrentUser,
+    // language,
+    // setExample,
+    // setSummary,
+    // showDisclaimerToast,
+    // setAIConfig,
+    // defaultModel,
+    // knowledgebase.knowledgebaseId,
+    selectedAI.userId,
+    selectedAI.id,
   ]);
   console.log('unique id uniqueId.current 1', uniqueId.current);
 
   useEffect(() => {
-    console.log('useEffect called');
+    // Increment the counter each time useEffect is called
 
-    /*  const getFunctionAnswer = async () => {
- 
-       const chatId = uniqueId.current;
- 
-       scrollSpan.current.scrollIntoView(true, { behavior: "auto", block: "end", inline: "nearest" });
- 
-       setHaveAnswer(true);
-       queryActive.current = false;
- 
-     } */
+    console.log('useEffect called times');
 
     const getAnswer = async (
       chunks,
@@ -893,26 +861,26 @@ const ChatScreen = () => {
   }, [
     inputValue,
     messageList,
-    sessionID,
-    semanticSearch,
-    insert,
-    getItems,
-    getLastItem,
-    toast,
+    // sessionID,
+    // semanticSearch,
+    // insert,
+    // getItems,
+    // getLastItem,
+    // toast,
     currentUser,
-    requestId,
-    url,
-    scoreLimit,
-    language,
-    setQueryActive,
-    summary,
-    lastGoodAnswer,
-    setLastGoodAnswer,
-    models,
-    defaultModel,
-    currentTopic,
-    setCurrentTopic,
-    getAIConfig,
+    // requestId,
+    // url,
+    // scoreLimit,
+    // language,
+    // setQueryActive,
+    // summary,
+    // lastGoodAnswer,
+    // setLastGoodAnswer,
+    // models,
+    // defaultModel,
+    // currentTopic,
+    // setCurrentTopic,
+    // getAIConfig,
   ]);
 
   console.log('session', sessionID);
@@ -1016,7 +984,7 @@ const ChatScreen = () => {
   console.log('currentUser', currentUser);
 
   console.log('threads in cha screen', threads);
-  console.log('knowledgebase', knowledgebase);
+  // console.log('knowledgebase', knowledgebase);
 
   console.log('is twin added', isAITwinAdded(knowledgebase.name));
 
@@ -1086,7 +1054,7 @@ const ChatScreen = () => {
                     mb="4"
                     bg="transparent"
                   />
-                  <Text fontSize="sm" color="gray.500" textAlign="center">
+                  <Text fontSize={12} color="gray.500" textAlign="center">
                     {knowledgebase.description}
                   </Text>
                 </Center>

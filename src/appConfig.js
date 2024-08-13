@@ -1,4 +1,4 @@
-import {extendTheme} from 'native-base';
+import {extendTheme} from '@gluestack-ui/themed-native-base';
 import styled from 'styled-components/native';
 
 import {NEXT_PUBLIC_CONTENT_LANGUAGE} from '@env';

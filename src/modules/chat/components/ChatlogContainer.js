@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box} from 'native-base';
+import {Box} from '@gluestack-ui/themed-native-base';
 
 const ChatlogContainer = ({children, sidebarShown}) => {
   return (

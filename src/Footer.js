@@ -1,5 +1,11 @@
 import React, {forwardRef, useEffect, useRef} from 'react';
-import {Box, HStack, TextArea, IconButton, useTheme} from 'native-base';
+import {
+  Box,
+  HStack,
+  TextArea,
+  IconButton,
+  useTheme,
+} from '@gluestack-ui/themed-native-base';
 // import {FiSend} from 'react-icons/fi';
 import {EVALS, themeColor} from './appConfig';
 import autosize from 'autosize';

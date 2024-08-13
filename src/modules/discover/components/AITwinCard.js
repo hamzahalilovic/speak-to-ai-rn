@@ -9,7 +9,7 @@ import {
   HStack,
   Pressable,
   Image,
-} from 'native-base';
+} from '@gluestack-ui/themed-native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const AITwinCard = ({
@@ -51,13 +51,13 @@ const AITwinCard = ({
         bg="transparent"
         alt={`${name}-avatar`}
       />
-      <Text fontWeight="bold" fontSize="16px" mb="4px">
+      <Text fontWeight="bold" fontSize={16} mb="4px">
         {name}
       </Text>
-      <Text fontSize="14px" color="#666" mb="12px" textAlign="center">
-        {description.length > 20
-          ? `${description.substring(0, 20)}...`
-          : description}
+      <Text fontSize={14} color="#666" mb="12px" textAlign="center">
+        {description && description.length > 80
+          ? `${description.substring(0, 80)}...`
+          : description || 'No description available'}
       </Text>
       <VStack space={3}>
         <Button bg="#2d2d2d" _text={{color: '#fff'}} onPress={onChatPress}>

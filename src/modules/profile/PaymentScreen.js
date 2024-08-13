@@ -1,6 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {View, Alert} from 'react-native';
-import {Text, VStack, HStack, Button, Icon, Spinner} from 'native-base';
+import {
+  Text,
+  VStack,
+  HStack,
+  Button,
+  Icon,
+  Spinner,
+} from '@gluestack-ui/themed-native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as RNIap from 'react-native-iap';
 
@@ -48,7 +55,7 @@ const PaymentScreen = () => {
 
   return (
     <View style={{flex: 1, padding: 16, backgroundColor: '#fff'}}>
-      <Text fontSize={24} fontWeight={600} lineHeight={33} mb={4}>
+      <Text fontSize={24} fontWeight={600} mb={4}>
         Payment Screen
       </Text>
       <VStack space={4}>
@@ -60,11 +67,11 @@ const PaymentScreen = () => {
             alignItems="center">
             <HStack space={3} alignItems="center">
               <Icon as={Ionicons} name="cash-outline" size="lg" />
-              <Text fontSize="16px" fontWeight="bold">
+              <Text fontSize={16} fontWeight="bold">
                 Purchase Premium Subscription
               </Text>
             </HStack>
-            <Text fontSize="14px" mt={2} color="gray.500" textAlign="center">
+            <Text fontSize={14} mt={2} color="gray.500" textAlign="center">
               Unlock all premium features and content with a one-time purchase.
             </Text>
             <Button

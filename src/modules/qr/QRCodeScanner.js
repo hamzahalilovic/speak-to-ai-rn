@@ -8,7 +8,15 @@ import {
 } from 'react-native-vision-camera';
 import DeviceInfo from 'react-native-device-info';
 import HTMLParser from 'react-native-html-parser';
-import {Spinner, VStack, Image, Box, Button, Text, View} from 'native-base';
+import {
+  Spinner,
+  VStack,
+  Image,
+  Box,
+  Button,
+  Text,
+  View,
+} from '@gluestack-ui/themed-native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useAppContext} from '../../context/AppContext';
 import Icon from 'react-native-vector-icons/Ionicons';

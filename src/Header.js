@@ -108,7 +108,7 @@ const Header = ({ onClose, onOpen, isOpen, isMobile, ...props }) => {
           </WrapItem>
           {headerOptions.middle.show &&
             <WrapItem w={[170, 220]} justifyContent={"left"} alignItems={"center"}>
-              <Text fontSize={["16px", "24px"]} as={"span"} lineHeight={"36px"} color={headerOptions.middle.color}>{headerOptions.middle.text}</Text>
+              <Text fontSize={["16px", "24px"]} as={"span"}  color={headerOptions.middle.color}>{headerOptions.middle.text}</Text>
             </WrapItem>
           }
         </Wrap>
