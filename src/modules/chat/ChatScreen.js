@@ -82,6 +82,8 @@ import {getThreads, saveThread, saveThreads} from './utils/threadsStorage';
 import SkeletonAvatarDescription from './components/SkeletonAvatarDescription';
 import SkeletonAnswerCard from './components/SkeletonAnswerCard';
 
+import HTMLParser from 'react-native-html-parser';
+
 // remove this when has better way to do this
 function ConditionalToast({shouldShowToast, speaker}) {
   const toast = useToast();
@@ -330,31 +332,76 @@ const ChatScreen = () => {
     isAITwinAdded,
   } = useAppContext(); // Access selected AI from context
 
+  console.log('selectedAI', selectedAI);
   const [propsFetched, setPropsFetched] = useState(false); // State to track props fetching
   useEffect(() => {
-    const API_URL = `${XMIDDLEWARE_API_URL}navigate${selectedAI?.id || ''}`;
+    // const API_URL = `${XMIDDLEWARE_API_URL}navigate${selectedAI?.id || ''}`;
+    const API_URL = `https://hey.speak-to.ai/${
+      selectedAI.userId || selectedAI.id
+    }`;
     console.log('API URL', API_URL);
 
+    // const fetchProps = async () => {
+    //   setState({loading: true});
+
+    //   try {
+    //     const response = await fetch(`${API_URL}`, {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //     });
+
+    //     if (!response.ok) {
+    //       throw new Error('Network response was not ok');
+    //     }
+    //     console.log('response', response);
+    //     const result = await response.json();
+    //     setProps(result);
+    //     // knowledgebase.current = result;
+    //     setKnowledgebase(result);
+    //     setPropsFetched(true); // Set to true after fetching is done
+    //   } catch (err) {
+    //     setError(err.message);
+    //     setPropsFetched(false); // Ensure it's false on error
+    //   } finally {
+    //     setState({loading: false});
+    //   }
+    // };
     const fetchProps = async () => {
       setState({loading: true});
 
       try {
         const response = await fetch(`${API_URL}`, {
-          method: 'POST',
+          method: 'GET', // Change method to 'GET' if necessary
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'text/html',
           },
         });
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('text/html')) {
+          const textData = await response.text();
+          const parsed = new HTMLParser.DOMParser().parseFromString(
+            textData,
+            'text/html',
+          );
+          const scriptTag = parsed.getElementById('__NEXT_DATA__')?.textContent;
 
-        const result = await response.json();
-        setProps(result);
-        // knowledgebase.current = result;
-        setKnowledgebase(result);
-        setPropsFetched(true); // Set to true after fetching is done
+          if (scriptTag) {
+            const result = JSON.parse(scriptTag).props.pageProps;
+
+            console.log('result parsed json', result);
+
+            setProps(result);
+            setKnowledgebase(result);
+            setPropsFetched(true); // Set to true after fetching is done
+          } else {
+            throw new Error('Data extraction failed');
+          }
+        } else {
+          throw new Error('Invalid content-type or no HTML received');
+        }
       } catch (err) {
         setError(err.message);
         setPropsFetched(false); // Ensure it's false on error
@@ -362,7 +409,6 @@ const ChatScreen = () => {
         setState({loading: false});
       }
     };
-
     // Trigger fetchProps whenever selectedAI changes
 
     fetchProps();
@@ -370,7 +416,9 @@ const ChatScreen = () => {
   useEffect(() => {
     console.log('selectedAI', selectedAI);
 
-    setUsername(selectedAI.id);
+    console.log('props', props);
+
+    setUsername(selectedAI.userId);
 
     // const API_URL = `http://localhost:3001/api/v1/navigate${
     //   selectedAI?.id || ''

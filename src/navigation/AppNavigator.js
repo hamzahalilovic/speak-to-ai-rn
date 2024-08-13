@@ -5,11 +5,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import DiscoverScreen from '../modules/discover/DiscoverScreen';
 
-import QRCodeScannerScreen from '../modules/qr/QRCodeScannerScreen';
+import QRCodeScannerScreen from '../modules/qr/QRCodeScanner';
 import ProfileScreen from '../modules/profile/ProfileScreen';
 
 import HomeStack from '../modules/home/HomeStack';
 import ProfileStack from '../modules/profile/ProfileStack';
+import ScannerStack from '../modules/qr/ScannerStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -24,7 +25,7 @@ function AppNavigator() {
             iconName = focused ? 'home' : 'home';
           } else if (route.name === 'Discover') {
             iconName = focused ? 'star' : 'star-outline';
-          } else if (route.name === 'QRCodeScanner') {
+          } else if (route.name === 'ScannerStack') {
             iconName = focused ? 'qr-code' : 'qr-code-outline';
           } else if (route.name === 'ProfileStack') {
             iconName = focused ? 'person' : 'person-outline';
@@ -54,8 +55,8 @@ function AppNavigator() {
         }}
       />
       <Tab.Screen
-        name="QRCodeScanner"
-        component={QRCodeScannerScreen}
+        name="ScannerStack"
+        component={ScannerStack}
         options={{
           headerShown: false,
         }}

@@ -1,5 +1,15 @@
 import React from 'react';
-import {Box, VStack, Avatar, Text, Button, Icon, HStack} from 'native-base';
+import {
+  Box,
+  VStack,
+  Avatar,
+  Text,
+  Button,
+  Icon,
+  HStack,
+  Pressable,
+  Image,
+} from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const AITwinCard = ({
@@ -9,38 +19,55 @@ const AITwinCard = ({
   avatar,
   onAddOrRemove,
   isAdded,
+  onDelete,
+  deletable,
 }) => {
   return (
     <Box
-      bg="#f2f2f2" // Background color for the card
-      borderRadius="10px" // Rounded corners
-      padding="16px" // Padding inside the card
-      alignItems="center" // Center items horizontally
-      shadow="2" // Add slight shadow for elevation
+      bg="#f2f2f2"
+      borderRadius="10px"
+      padding="16px"
+      alignItems="center"
+      shadow="2"
       width="100%"
-      maxWidth="300px" // Max width for the card
+      maxWidth="300px"
+      position="relative" // To position the delete button
     >
-      <Avatar size={65} source={{uri: avatar}} mb="12px" bg="transparent" />
+      {deletable && (
+        <Pressable
+          onPress={onDelete}
+          position="absolute"
+          top={2}
+          right={1}
+          zIndex={1}>
+          <Icon as={Ionicons} name="trash" size={25} color="red.500" />
+        </Pressable>
+      )}
+
+      <Image
+        size={65}
+        source={{uri: avatar}}
+        mb="12px"
+        bg="transparent"
+        alt={`${name}-avatar`}
+      />
       <Text fontWeight="bold" fontSize="16px" mb="4px">
         {name}
       </Text>
       <Text fontSize="14px" color="#666" mb="12px" textAlign="center">
-        {description}
+        {description.length > 20
+          ? `${description.substring(0, 20)}...`
+          : description}
       </Text>
       <VStack space={3}>
-        <Button
-          bg="#2d2d2d" // Button background color
-          _text={{color: '#fff'}} // Button text color
-          onPress={onChatPress} // Handle press event
-        >
+        <Button bg="#2d2d2d" _text={{color: '#fff'}} onPress={onChatPress}>
           Chat
         </Button>
         <Button
           size={'xs'}
-          bg={isAdded ? '#4CAF50' : '#f2f2f2'} // Change background color based on isAdded state
-          _text={{color: isAdded ? '#fff' : '#2D313B'}} // Change text color based on isAdded state
-          onPress={onAddOrRemove} // Handle add/remove event
-          disabled={isAdded} //
+          bg={isAdded ? '#4CAF50' : '#f2f2f2'}
+          _text={{color: isAdded ? '#fff' : '#2D313B'}}
+          onPress={onAddOrRemove}
           leftIcon={
             isAdded ? (
               <Icon as={Ionicons} name="checkmark" color="#fff" size="sm" />

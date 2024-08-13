@@ -1,7 +1,11 @@
 import React, {createContext, useContext, useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {getPresetAITwins} from '../modules/discover/utils/aiTwinsStorage';
+import {
+  getPresetAITwins,
+  saveDiscoveredAITwins,
+  getDiscoveredAITwins,
+} from '../modules/discover/utils/aiTwinsStorage';
 
 const AppContext = createContext();
 
@@ -14,19 +18,33 @@ export const AppContextProvider = ({children}) => {
   const [aiTwinsPreset, setAiTwinsPreset] = useState([]);
 
   useEffect(() => {
-    // Load saved AI twins from AsyncStorage on app start
-    const loadSavedAITwins = async () => {
+    const loadData = async () => {
       try {
-        const storedAITwins = await AsyncStorage.getItem('savedAITwins');
+        const [storedAITwins, presetTwins, discoveredTwins] = await Promise.all(
+          [
+            AsyncStorage.getItem('savedAITwins'),
+            getPresetAITwins(),
+            getDiscoveredAITwins(),
+          ],
+        );
+
         if (storedAITwins) {
           setSavedAITwins(JSON.parse(storedAITwins));
         }
+
+        if (presetTwins) {
+          setAiTwinsPreset(presetTwins);
+        }
+
+        if (discoveredTwins) {
+          setAiTwinsDiscovered(discoveredTwins);
+        }
       } catch (error) {
-        console.error('Failed to load saved AI twins', error);
+        console.error('Failed to load AI twins data', error);
       }
     };
 
-    loadSavedAITwins();
+    loadData();
   }, []);
 
   const addAITwinToHome = async twin => {
@@ -47,21 +65,20 @@ export const AppContextProvider = ({children}) => {
     );
   };
 
-  // Add this inside your useEffect to load preset AI twins
-  useEffect(() => {
-    const loadPresetAITwins = async () => {
-      try {
-        const presetTwins = await getPresetAITwins();
-        setAiTwinsPreset(presetTwins);
-      } catch (error) {
-        console.error('Failed to load preset AI twins', error);
-      }
-    };
+  const addDiscoveredAITwin = async twin => {
+    const updatedAITwins = [...aiTwinsDiscovered, twin];
+    setAiTwinsDiscovered(updatedAITwins);
+    await saveDiscoveredAITwins(updatedAITwins);
+  };
 
-    loadPresetAITwins();
-  }, []);
+  const togglePresetAITwin = async twin => {
+    const updatedTwins = aiTwinsPreset.some(item => item.id === twin.id)
+      ? aiTwinsPreset.filter(item => item.id !== twin.id)
+      : [...aiTwinsPreset, twin];
 
-  console.log('aitwinspreset appcontext', aiTwinsPreset);
+    setAiTwinsPreset(updatedTwins);
+    await AsyncStorage.setItem('/aiTwins/preset', JSON.stringify(updatedTwins));
+  };
 
   return (
     <AppContext.Provider
@@ -78,8 +95,10 @@ export const AppContextProvider = ({children}) => {
         isAITwinAdded,
         aiTwinsDiscovered,
         setAiTwinsDiscovered,
+        addDiscoveredAITwin,
         aiTwinsPreset,
         setAiTwinsPreset,
+        togglePresetAITwin,
       }}>
       {children}
     </AppContext.Provider>

@@ -7,6 +7,29 @@ PODS:
   - hermes-engine (0.74.2):
     - hermes-engine/Pre-built (= 0.74.2)
   - hermes-engine/Pre-built (0.74.2)
+  - lottie-ios (4.4.1)
+  - lottie-react-native (6.7.2):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - lottie-ios (= 4.4.1)
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RCT-Folly (2024.01.01.00):
     - boost
     - DoubleConversion
@@ -1262,6 +1285,7 @@ DEPENDENCIES:
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
+  - lottie-react-native (from `../node_modules/lottie-react-native`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTDeprecation (from `../node_modules/react-native/ReactApple/Libraries/RCTFoundation/RCTDeprecation`)
@@ -1328,6 +1352,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - lottie-ios
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -1344,6 +1369,8 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-2024-06-03-RNv0.74.2-bb1e74fe1e95c2b5a2f4f9311152da052badc2bc
+  lottie-react-native:
+    :path: "../node_modules/lottie-react-native"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTDeprecation:
@@ -1474,6 +1501,8 @@ SPEC CHECKSUMS:
   fmt: 8083860262b879fc92bca720969c91bdb88ada93
   glog: 77f46f3d5c779b34a09b51a92fa9e0fcab64df1c
   hermes-engine: f9800b05dc3cb656cb1b7aaf4726bcd27da48935
+  lottie-ios: e047b1d2e6239b787cc5e9755b988869cf190494
+  lottie-react-native: 4279da8b681e89c29a2adb9f99985d6cf372d49d
   RCT-Folly: 36944e180e3143948e1c8b0c5eade65a3dd45142
   RCTDeprecation: b03c35057846b685b3ccadc9bfe43e349989cdb2
   RCTRequired: 194626909cfa8d39ca6663138c417bc6c431648c

@@ -1,13 +1,15 @@
 import React, {useState} from 'react';
-import {View, FlatList, StyleSheet, TextInput} from 'react-native';
-import {Text, Button, Icon, VStack, Box, Pressable} from 'native-base';
+import {View, FlatList, StyleSheet, TextInput, Alert} from 'react-native';
+import {Text, Button, VStack, Box, Pressable} from 'native-base';
 import {useNavigation} from '@react-navigation/native';
 import AITwinCard from './components/AITwinCard';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useAppContext} from '../../context/AppContext';
+import {saveDiscoveredAITwins} from '../discover/utils/aiTwinsStorage';
 
 const DiscoverScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTab, setSelectedTab] = useState('preset');
   const {
     setSelectedAI,
     addAITwinToHome,
@@ -15,6 +17,7 @@ const DiscoverScreen = () => {
     isAITwinAdded,
     aiTwinsPreset,
     aiTwinsDiscovered,
+    setAiTwinsDiscovered,
   } = useAppContext();
   const navigation = useNavigation();
 
@@ -25,13 +28,58 @@ const DiscoverScreen = () => {
       addAITwinToHome(twin);
     }
   };
-  console.log('aiTwinsPreset discover screen', aiTwinsPreset);
-  const [showPreset, setShowPreset] = useState(true);
-  const [showDiscovered, setShowDiscovered] = useState(false);
+
+  const handleDeleteTwin = knowledgebaseId => {
+    Alert.alert(
+      'Delete AI Twin',
+      'Are you sure you want to delete this AI Twin?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: async () => {
+            const updatedTwins = aiTwinsDiscovered.filter(
+              twin => twin.knowledgebaseId !== knowledgebaseId,
+            );
+            setAiTwinsDiscovered(updatedTwins);
+            await saveDiscoveredAITwins(updatedTwins);
+          },
+          style: 'destructive',
+        },
+      ],
+    );
+  };
+
+  const handleDeleteAllTwins = () => {
+    Alert.alert(
+      'Delete All AI Twins',
+      'Are you sure you want to delete all discovered AI Twins? This action cannot be undone.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete All',
+          onPress: async () => {
+            setAiTwinsDiscovered([]);
+            await saveDiscoveredAITwins([]);
+          },
+          style: 'destructive',
+        },
+      ],
+    );
+  };
+
+  console.log('aiTwinsPreset', aiTwinsPreset);
+  console.log('aiTwinsDiscovered', aiTwinsDiscovered);
 
   return (
     <View style={styles.container}>
-      <Text fontSize={24} fontWeight={600} lineHeight={33}>
+      <Text fontSize={24} fontWeight={600} lineHeight={33} mb={4}>
         Discover AI’s
       </Text>
       <TextInput
@@ -42,36 +90,35 @@ const DiscoverScreen = () => {
         onChangeText={setSearchQuery}
       />
 
-      {/* Preset AI Twins */}
-      <Pressable onPress={() => setShowPreset(!showPreset)}>
-        <Box
-          backgroundColor="gray.200"
-          borderRadius="md"
-          p={2}
-          mb={2}
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="center">
-          <Text fontSize="md" fontWeight="bold">
-            Preset AI Twins
-          </Text>
-          <Icon
-            as={Ionicons}
-            name={showPreset ? 'chevron-up' : 'chevron-down'}
-            size="sm"
-          />
-        </Box>
-      </Pressable>
-      {showPreset && (
+      {/* Custom Tab Navigation */}
+      <View style={styles.tabContainer}>
+        <Pressable
+          onPress={() => setSelectedTab('preset')}
+          style={[styles.tab, selectedTab === 'preset' && styles.activeTab]}>
+          <Text style={styles.tabText}>Preset AI Twins</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setSelectedTab('discovered')}
+          style={[
+            styles.tab,
+            selectedTab === 'discovered' && styles.activeTab,
+          ]}>
+          <Text style={styles.tabText}>Discovered AI Twins</Text>
+        </Pressable>
+      </View>
+
+      {/* Conditionally Render Content Based on Active Tab */}
+      {selectedTab === 'preset' && (
         <FlatList
           data={aiTwinsPreset}
           keyExtractor={item => item.id}
           numColumns={2}
           renderItem={({item}) => (
-            <View style={styles.cardWrapper}>
+            <VStack style={styles.cardWrapper}>
               <AITwinCard
+                deletable={false}
                 avatar={item.avatar}
-                name={item.name}
+                name={item.title}
                 description={item.description}
                 onChatPress={() => {
                   setSelectedAI(item);
@@ -80,52 +127,45 @@ const DiscoverScreen = () => {
                 onAddOrRemove={() => handleAddOrRemoveTwin(item)}
                 isAdded={isAITwinAdded(item.knowledgebaseId)}
               />
-            </View>
+            </VStack>
           )}
         />
       )}
 
-      {/* Discovered AI Twins */}
-      <Pressable onPress={() => setShowDiscovered(!showDiscovered)}>
-        <Box
-          backgroundColor="gray.200"
-          borderRadius="md"
-          p={2}
-          mb={2}
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="center">
-          <Text fontSize="md" fontWeight="bold">
-            Discovered AI Twins
-          </Text>
-          <Icon
-            as={Ionicons}
-            name={showDiscovered ? 'chevron-up' : 'chevron-down'}
-            size="sm"
+      {selectedTab === 'discovered' && (
+        <>
+          <FlatList
+            data={aiTwinsDiscovered}
+            keyExtractor={item => item.knowledgebaseId}
+            numColumns={2}
+            renderItem={({item}) => (
+              <VStack style={styles.cardWrapper}>
+                <AITwinCard
+                  deletable={true}
+                  avatar={item.avatarUrl}
+                  name={item.title}
+                  description={item.description}
+                  onChatPress={() => {
+                    setSelectedAI(item);
+                    navigation.navigate('Chat');
+                  }}
+                  onAddOrRemove={() => handleAddOrRemoveTwin(item)}
+                  isAdded={isAITwinAdded(item.knowledgebaseId)}
+                  onDelete={() => handleDeleteTwin(item.knowledgebaseId)}
+                />
+              </VStack>
+            )}
           />
-        </Box>
-      </Pressable>
-      {showDiscovered && (
-        <FlatList
-          data={discoveredAITwins} // Currently empty, but add data here later
-          keyExtractor={item => item.id}
-          numColumns={2}
-          renderItem={({item}) => (
-            <View style={styles.cardWrapper}>
-              <AITwinCard
-                avatar={item.avatar}
-                name={item.name}
-                description={item.description}
-                onChatPress={() => {
-                  setSelectedAI(item);
-                  navigation.navigate('Chat');
-                }}
-                onAddOrRemove={() => handleAddOrRemoveTwin(item)}
-                isAdded={isAITwinAdded(item.knowledgebaseId)}
-              />
-            </View>
+          {aiTwinsDiscovered.length > 0 && (
+            <Button
+              onPress={handleDeleteAllTwins}
+              mt={4}
+              colorScheme="red"
+              variant="outline">
+              Delete All Discovered AI Twins
+            </Button>
           )}
-        />
+        </>
       )}
     </View>
   );
@@ -146,6 +186,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 16,
     marginTop: 26,
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 16,
+  },
+  tab: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    backgroundColor: '#e0e0e0',
+  },
+  activeTab: {
+    backgroundColor: '#6200ea',
+  },
+  tabText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   cardWrapper: {
     flex: 1,
