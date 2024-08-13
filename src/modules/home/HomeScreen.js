@@ -50,7 +50,9 @@ const HomeScreen = () => {
   return (
     <View
       style={{flex: 1, padding: 16, paddingTop: 55, backgroundColor: '#fff'}}>
-      <Text mb={4}>Your AI’s</Text>
+      <Text fontSize={24} fontWeight={600} mb={4}>
+        Your AI's
+      </Text>
       <FlatList
         data={savedAITwins}
         keyExtractor={item => item.knowledgebaseId}
@@ -61,7 +63,12 @@ const HomeScreen = () => {
               padding={4}
               borderBottomWidth={1}
               borderBottomColor="gray.200">
-              <Avatar source={{uri: item.avatar}} size="40px" mr={4} />
+              <Avatar
+                bg="transparent"
+                source={{uri: item.avatar}}
+                size="40px"
+                mr={4}
+              />
               <Text fontSize={16} flex={1}>
                 {item.title}
               </Text>

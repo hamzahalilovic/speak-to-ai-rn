@@ -1020,8 +1020,7 @@ const ChatScreen = () => {
     <KeyboardAvoidingView
       style={{flex: 1, backgroundColor: '#f5f5f5', width: '100%'}}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <View style={{flex: 1, backgroundColor: '#f5f5f5', width: '100%'}}>
-        {/* <CustomHeader handleNewThread={handleNewThread} /> */}
+      <View style={{flex: 1, backgroundColor: '#f5f5f5', width: '100%',paddingTop: 30}}>
         <CustomHeader
           knowledgebaseId={knowledgebase.knowledgebaseId}
           name={knowledgebase.title}
