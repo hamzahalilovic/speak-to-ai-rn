@@ -70,6 +70,7 @@ import CustomHeader from './components/CustomHeader';
 import {getThreads, saveThread, saveThreads} from './utils/threadsStorage';
 
 import HTMLParser from 'react-native-html-parser';
+import LottieView from 'lottie-react-native';
 
 // remove this when has better way to do this
 // function ConditionalToast({shouldShowToast, speaker}) {
@@ -1011,101 +1012,114 @@ const ChatScreen = () => {
         width: '100%',
       }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <CustomHeader
-        knowledgebaseId={knowledgebase.knowledgebaseId}
-        name={knowledgebase.title}
-        avatar={knowledgebase.avatar}
-        handleNewThread={handleNewThread}
-        isNewThreadDisabled={messageList.length === 0}
-      />
-      {state.loading ? (
-        <Text>loading</Text>
-      ) : state.errors ? (
-        <Alert status="error">Invalid username</Alert>
-      ) : (
-        <>
-          <ScrollView
-            ref={scrollViewRef}
-            style={{flex: 1}}
-            contentContainerStyle={{paddingBottom: 80, width: '100%'}}
-            onContentSizeChange={(contentWidth, contentHeight) => {
-              setContentHeight(contentHeight); // Track the content height
-            }}>
-            {messageList.length === 0 ? (
-              <Center
-                style={{
-                  paddingHorizontal: 24,
-                  paddingTop: 32,
-                }}>
-                <Avatar bg="transparent" size="2xl" mb={5}>
-                  <AvatarImage
-                    alt="avatar"
-                    source={{uri: knowledgebase.avatar}}
-                  />
-                </Avatar>
-                <Text fontSize={14} color="gray.500" textAlign="center">
-                  {knowledgebase.description}
-                </Text>
-              </Center>
-            ) : (
-              <VStack>
-                <Box ref={messagesContainerRef} id="messages_container">
-                  <Box id="messages" ref={messagesRef}>
-                    <Box padding="24px" paddingBottom="0px">
-                      {messageList.map((message, key) => (
-                        <Box key={`chats-${key}`} className="messageContainer">
-                          <QuestionCard
-                            key={`question-${key}`}
-                            message={message[0]}
-                          />
+      <View style={{flex: 1, width: '100%'}}>
+        <CustomHeader
+          knowledgebaseId={knowledgebase.knowledgebaseId}
+          name={knowledgebase.title}
+          avatar={knowledgebase.avatar}
+          handleNewThread={handleNewThread}
+          isNewThreadDisabled={messageList.length === 0}
+        />
+        {state.loading ? (
+          // <Text>loading</Text>
+          <Center
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <LottieView
+              source={require('../../assets/lottie-animations/loading-chat.json')}
+              style={{width: 200, height: 200}} // Adjust width and height as needed
+              autoPlay
+              loop
+            />
+          </Center>
+        ) : state.errors ? (
+          <Alert status="error">Invalid username</Alert>
+        ) : (
+          <>
+            <ScrollView
+              ref={scrollViewRef}
+              style={{flex: 1}}
+              contentContainerStyle={{paddingBottom: 80, width: '100%'}}
+              onContentSizeChange={(contentWidth, contentHeight) => {
+                setContentHeight(contentHeight); // Track the content height
+              }}>
+              {messageList.length === 0 ? (
+                <Center
+                  style={{
+                    paddingHorizontal: 24,
+                    paddingTop: 32,
+                  }}>
+                  <Avatar bg="transparent" size="2xl" mb={5}>
+                    <AvatarImage
+                      alt="avatar"
+                      source={{uri: knowledgebase.avatar}}
+                    />
+                  </Avatar>
+                  <Text fontSize={14} color="gray.500" textAlign="center">
+                    {knowledgebase.description}
+                  </Text>
+                </Center>
+              ) : (
+                <VStack space="xs" w="100%" px={24}>
+                  <Box ref={messagesContainerRef} id="messages_container">
+                    <Box id="messages" ref={messagesRef}>
+                      <Box padding="24px" paddingBottom="0px">
+                        {messageList.map((message, key) => (
+                          <Box
+                            key={`chats-${key}`}
+                            className="messageContainer">
+                            <QuestionCard
+                              key={`question-${key}`}
+                              message={message[0]}
+                            />
 
-                          <AnswerCard
-                            knowledgeBase={knowledgebase}
-                            message={message[1]}
-                            isAdded={isAITwinAdded(
-                              knowledgebase.knowledgebaseId,
-                            )}
-                            addAITwinToHome={addAITwinToHome}
-                            handleFeedbackClick={handleFeedbackClick}
-                            language={language}
-                          />
-                        </Box>
-                      ))}
+                            <AnswerCard
+                              knowledgeBase={knowledgebase}
+                              message={message[1]}
+                              isAdded={isAITwinAdded(
+                                knowledgebase.knowledgebaseId,
+                              )}
+                              addAITwinToHome={addAITwinToHome}
+                              handleFeedbackClick={handleFeedbackClick}
+                              language={language}
+                            />
+                          </Box>
+                        ))}
 
-                      <Text
-                        style={{
-                          height: '10px',
-                          width: '100%',
-                          marginBottom: '25px',
-                        }}
-                        ref={scrollSpan}
-                        id="scroll-marker"
-                      />
+                        <Text
+                          style={{
+                            height: '10px',
+                            width: '100%',
+                            marginBottom: '25px',
+                          }}
+                          ref={scrollSpan}
+                          id="scroll-marker"
+                        />
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
-              </VStack>
-            )}
-          </ScrollView>
-          <Box
-            style={{
-              position: 'absolute',
-              bottom: 20,
-              left: 0,
-              right: 0,
-              zIndex: 9999,
-            }}>
-            <ChatInput
-              ref={statement}
-              value={tempInputValue}
-              onChangeText={setTempInputValue}
-              onSubmitEditing={() => handleNewMessage(tempInputValue)}
-              placeholder="Ask anything..."
-              editable={!queryActive}
-            />
-          </Box>
-        </>
-      )}
+                </VStack>
+              )}
+            </ScrollView>
+            <Box
+              style={{
+                position: 'absolute',
+                bottom: 20,
+                left: 0,
+                right: 0,
+                zIndex: 9999,
+              }}>
+              <ChatInput
+                ref={statement}
+                value={tempInputValue}
+                onChangeText={setTempInputValue}
+                onSubmitEditing={() => handleNewMessage(tempInputValue)}
+                placeholder="Ask anything..."
+                editable={!queryActive}
+              />
+            </Box>
+          </>
+        )}
+      </View>
     </KeyboardAvoidingView>
   );
 };

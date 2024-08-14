@@ -47,20 +47,17 @@ const PresetAITwinsScreen = () => {
 
   return (
     <ScrollView backgroundColor="#fff">
-      <Center flex={1} px="3" backgroundColor="#fff" mb={30}>
-        <Text fontSize="xl" bold alignSelf={'flex-start'} mb={15} mt={15}>
-          Select Preset AI Twins
-        </Text>
-        <VStack space={4} alignItems="center">
+      <Center flex={1} px="3" backgroundColor="#fff" mt={30} mb={30}>
+        <VStack space="xl" alignItems="center">
           {aiTwins.map(twin => (
             <Pressable
               key={twin.knowledgebaseId}
               onPress={() => toggleTwin(twin)}>
               <Box
                 width={250}
-                borderRadius="lg"
+                borderRadius={12}
                 borderWidth={2}
-                borderColor={isTwinPreset(twin) ? 'green.500' : 'coolGray.200'}
+                borderColor={isTwinPreset(twin) ? 'lightgreen' : 'lightgray'}
                 p={4}
                 alignItems="center"
                 backgroundColor="white">
@@ -73,13 +70,13 @@ const PresetAITwinsScreen = () => {
                 />
                 <Text bold>{twin.title}</Text>
 
-                {/* <Text fontSize={14} color="#666" mb="12px" textAlign="center">
-                  {twin.description.length > 80
-                    ? `${twin.description.substring(0, 80)}...`
+                <Text fontSize={14} color="#666" mb="12px" textAlign="center">
+                  {twin.description.length > 200
+                    ? `${twin.description.substring(0, 200)}...`
                     : twin.description}
-                </Text> */}
+                </Text>
                 {isTwinPreset(twin) && (
-                  <Text color="green.500" mt={2}>
+                  <Text color="lightgreen" mt={2}>
                     ✓ Added
                   </Text>
                 )}

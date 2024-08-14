@@ -4,12 +4,13 @@ import {
   HStack,
   Text,
   Avatar,
+  AvatarImage,
   Button,
   Icon,
   ButtonText,
 } from '@gluestack-ui/themed';
+import LottieView from 'lottie-react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
 import {useAppContext} from '../../../context/AppContext';
 
 const AnswerCard = ({
@@ -17,8 +18,8 @@ const AnswerCard = ({
   message,
   handleFeedbackClick,
   language,
-  isAdded, // Receive this as prop
-  addAITwinToHome, // Receive this as prop
+  isAdded,
+  addAITwinToHome,
 }) => {
   const handleAddTwin = () => {
     if (!isAdded) {
@@ -26,10 +27,13 @@ const AnswerCard = ({
     }
   };
   console.log('message in answer card', message);
+
   return (
-    <Box padding={4} borderColor="gray.200">
-      <HStack alignItems="center" space="3">
-        <Avatar source={{uri: knowledgeBase.avatar}} size="32.5px" />
+    <Box padding={12} borderColor="gray">
+      <HStack alignItems="center" space="sm">
+        <Avatar size={32.5} bg="transparent">
+          <AvatarImage alt="avatar" source={{uri: knowledgeBase.avatar}} />
+        </Avatar>
         <Box flex={1}>
           <HStack justifyContent="space-between" alignItems="center">
             <Text fontSize={14} fontWeight="bold">
@@ -44,17 +48,27 @@ const AnswerCard = ({
                   <Icon as={Ionicons} name="checkmark" size="sm" color="#fff" />
                 )
               }>
-              <Text color={isAdded ? '#fff' : '#2D313B'}>
-                <ButtonText>{isAdded ? 'Added' : 'Add AI'}</ButtonText>
-              </Text>
+              <ButtonText>{isAdded ? 'Added' : 'Add AI'}</ButtonText>
             </Button>
           </HStack>
         </Box>
       </HStack>
-      <Text mt="2" fontSize={14} color="#333">
-        {message.answer}
-      </Text>
+      <Box mt={12}>
+        {message.streaming ? (
+          <LottieView
+            source={require('../../../assets/lottie-animations/answer-chat-animation.json')}
+            autoPlay
+            loop
+            style={{height: 75}}
+          />
+        ) : (
+          <Text fontSize={14} color="#333">
+            {message.answer}
+          </Text>
+        )}
+      </Box>
     </Box>
   );
 };
+
 export default AnswerCard;

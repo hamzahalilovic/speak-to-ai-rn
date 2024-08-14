@@ -55,6 +55,12 @@ const HomeScreen = () => {
       <Text fontSize={24} fontWeight={600} mb={15}>
         Your AI's
       </Text>
+      {savedAITwins.length > 0 ? null : (
+        <Text fontSize={18} fontWeight={40} mt={35}>
+          Go to Discover to add AI Twins to your Home
+        </Text>
+      )}
+
       <FlatList
         data={savedAITwins}
         keyExtractor={item => item.knowledgebaseId}

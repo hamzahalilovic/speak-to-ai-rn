@@ -18,10 +18,12 @@ import {
   ButtonGroup,
   Text,
   View,
+  Center,
 } from '@gluestack-ui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useAppContext} from '../../context/AppContext';
 import Icon from 'react-native-vector-icons/Ionicons';
+import LottieView from 'lottie-react-native';
 
 const QRCodeScanner = () => {
   const useGetCameraDevice = DeviceInfo.isEmulatorSync()
@@ -176,47 +178,61 @@ const QRCodeScanner = () => {
 
       {loading ? (
         <View style={styles.qrCodeContainer}>
-          <Spinner color="emerald.500" size="lg" />
-          <Text style={styles.qrCodeText}>AI Twin found: Loading...</Text>
+          <Spinner size="xl" />
+          <Text mt={20} style={styles.qrCodeText}>
+            AI Twin found: Please wait a moment...
+          </Text>
         </View>
       ) : (
         <>
           {aiTwinData && (
-            <View style={styles.qrCodeContainer}>
-              <Text style={styles.qrCodeText}>
-                AI Twin found: {aiTwinData.name}
-              </Text>
-              <Image
-                source={{uri: aiTwinData.avatar}}
-                alt="AI Twin Avatar"
-                size="lg"
-                borderRadius={100}
-                mb={4}
-              />
-              {aiTwinsDiscovered.some(
-                twin => twin.knowledgebaseId === aiTwinData.knowledgebaseId,
-              ) ? (
-                <Box
-                  mt={4}
-                  p={3}
-                  borderColor="green.500"
-                  borderWidth={1}
-                  borderRadius="md"
-                  alignItems="center">
-                  <Icon name={'checkmark-circle'} size={24} color={'green'} />
-                  <Text style={{color: 'green'}}>AI Twin added</Text>
-                </Box>
-              ) : (
-                <ButtonGroup variant="outline" space={2} mt={4}>
-                  <Button onPress={handleScanAgain}>
-                    <ButtonText>can Again</ButtonText>
-                  </Button>
-                  <Button onPress={handleAddToDiscover}>
-                    <ButtonText>Add AI Twin to Discover</ButtonText>
-                  </Button>
-                </ButtonGroup>
-              )}
-            </View>
+            <Center>
+              <View style={styles.qrCodeContainer}>
+                <Text style={styles.qrCodeText}>
+                  AI Twin found: {aiTwinData.name}
+                </Text>
+                <Image
+                  source={{uri: aiTwinData.avatar}}
+                  alt="AI Twin Avatar"
+                  size="lg"
+                  borderRadius={100}
+                  mb={4}
+                />
+                {aiTwinsDiscovered.some(
+                  twin => twin.knowledgebaseId === aiTwinData.knowledgebaseId,
+                ) ? (
+                  // <Box
+                  //   mt={4}
+                  //   p={3}
+                  //   borderColor="green"
+                  //   borderRadius="md"
+                  //   alignItems="center">
+                  //   <Icon name={'checkmark-circle'} size={24} color={'green'} />
+                  //   <Text style={{color: 'green'}}>AI Twin added</Text>
+                  // </Box>
+
+                  <LottieView
+                    source={require('../../assets/lottie-animations/success-animation.json')}
+                    style={{width: '100%', height: '100%'}}
+                    autoPlay
+                    loop={false}
+                  />
+                ) : (
+                  <ButtonGroup
+                    variant="outline"
+                    borderColor="green"
+                    space={2}
+                    mt={4}>
+                    <Button onPress={handleScanAgain}>
+                      <ButtonText>Scan Again</ButtonText>
+                    </Button>
+                    <Button onPress={handleAddToDiscover}>
+                      <ButtonText>Add AI Twin to Discover</ButtonText>
+                    </Button>
+                  </ButtonGroup>
+                )}
+              </View>
+            </Center>
           )}
           {fetchError && (
             <View style={styles.qrCodeContainer}>
@@ -244,11 +260,12 @@ const styles = StyleSheet.create({
   qrCodeContainer: {
     position: 'absolute',
     bottom: 20,
-    padding: 10,
+    padding: 20,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     borderRadius: 8,
     alignItems: 'center',
   },
+
   qrCodeText: {
     color: '#fff',
     fontSize: 16,

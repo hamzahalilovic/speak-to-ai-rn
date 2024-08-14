@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Alert} from 'react-native';
+import {View, StyleSheet, Alert, TouchableOpacity} from 'react-native';
 import {
   Button,
   ButtonText,
@@ -21,6 +21,9 @@ import {
   AvatarImage,
   Avatar,
   Divider,
+  ModalBackdrop,
+  ButtonIcon,
+  Pressable,
 } from '@gluestack-ui/themed';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -29,6 +32,9 @@ import HTMLParser from 'react-native-html-parser';
 import {useAppContext} from '../../context/AppContext';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
+import Feather from 'react-native-vector-icons/Feather';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const ScannerScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -226,8 +232,14 @@ const ScannerScreen = () => {
           </Center>
         )}
         <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
+          <ModalBackdrop />
+
           <ModalContent>
-            <ModalCloseButton />
+            <ModalCloseButton>
+              <Text fontWeight={'bold'} fontSize={14}>
+                X
+              </Text>
+            </ModalCloseButton>
             <ModalHeader>
               <Text>AI Twin Found</Text>
             </ModalHeader>
@@ -268,7 +280,7 @@ const ScannerScreen = () => {
         <Text fontSize={16} fontWeight={400} mb={4}>
           Enter the URL manually or scan the QR code of your AI Twin
         </Text>
-        <Button
+        {/* <Button
           bg="#2D313B"
           onPress={() => navigation.navigate('QRCodeScanner')}
           mb={4}>
@@ -276,7 +288,28 @@ const ScannerScreen = () => {
         </Button>
         <Button bg="#2D313B" onPress={handleFetchFromUrl} mb={4}>
           <ButtonText>Enter URL</ButtonText>
-        </Button>
+        </Button> */}
+
+        <HStack
+          width="100%"
+          space="2xl"
+          paddingHorizontal={60}
+          alignContent="center"
+          justifyContent="space-between">
+          <TouchableOpacity onPress={handleFetchFromUrl}>
+            <Feather name="link-2" size={75} color="#2D313B" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('QRCodeScanner')}>
+            <MaterialCommunityIcons
+              name="qrcode-scan"
+              size={75}
+              color="#2D313B"
+            />
+          </TouchableOpacity>
+        </HStack>
+
         <Divider mt={20} mb={20} />
         <Box
           flexDirection="row"
@@ -316,7 +349,7 @@ const ScannerScreen = () => {
                   shadow={2}>
                   <HStack alignItems="center" space="sm">
                     <Ionicons name="link-outline" size={20} color="#2D313B" />
-                    <Avatar size="sm">
+                    <Avatar size="sm" bg="transparent">
                       <AvatarImage source={{uri: item.aiTwinData.avatar}} />
                     </Avatar>
                     <VStack flex={1}>
