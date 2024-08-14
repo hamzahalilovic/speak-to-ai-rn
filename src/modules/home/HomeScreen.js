@@ -62,14 +62,22 @@ const HomeScreen = () => {
               alignItems="center"
               padding={4}
               borderBottomWidth={1}
-              borderBottomColor="gray.200">
+              borderBottomColor="gray.200"
+              accessibilityRole="button"
+              accessibilityLabel={`Chat with ${item.title}`}
+              accessibilityHint="Double tap to chat">
               <Avatar
                 bg="transparent"
                 source={{uri: item.avatar}}
                 size="40px"
                 mr={4}
+                accessibilityIgnoresInvertColors={true} // for images
               />
-              <Text fontSize={16} flex={1}>
+              <Text
+                fontSize={16}
+                flex={1}
+                textBreakStrategy="simple"
+                textValue={item.title}>
                 {item.title}
               </Text>
               <Menu
@@ -81,7 +89,9 @@ const HomeScreen = () => {
                     </TouchableOpacity>
                   );
                 }}>
-                <Menu.Item onPress={() => handleShowInfo(item)}>
+                <Menu.Item
+                  onPress={() => handleShowInfo(item)}
+                  textValue="Info">
                   <HStack alignItems="center">
                     <Icon
                       as={Ionicons}
@@ -92,7 +102,7 @@ const HomeScreen = () => {
                     <Text>Info</Text>
                   </HStack>
                 </Menu.Item>
-                <Menu.Item onPress={() => handleRemoveTwin(item.id)}>
+                <Menu.Item onPress={() => handleRemoveTwin(item.userId)}>
                   <HStack alignItems="center">
                     <Icon
                       as={Ionicons}
@@ -102,12 +112,6 @@ const HomeScreen = () => {
                       mr={2}
                     />
                     <Text color="red.500">Remove</Text>
-                  </HStack>
-                </Menu.Item>
-                <Menu.Item onPress={() => handleChatPress(item)}>
-                  <HStack alignItems="center">
-                    {/* <Icon as={Ionicons} name="chatbubbles" size="sm" mr={2} /> */}
-                    <Text>Chat</Text>
                   </HStack>
                 </Menu.Item>
               </Menu>

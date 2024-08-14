@@ -49,8 +49,15 @@ const QRCodeScanner = () => {
     try {
       const storedHistory = await AsyncStorage.getItem('scanHistory');
       const history = storedHistory ? JSON.parse(storedHistory) : [];
-      const updatedHistory = [...history, url];
-      await AsyncStorage.setItem('scanHistory', JSON.stringify(updatedHistory));
+
+      // Check if the URL already exists in the history
+      if (!history.includes(url)) {
+        const updatedHistory = [...history, url];
+        await AsyncStorage.setItem(
+          'scanHistory',
+          JSON.stringify(updatedHistory),
+        );
+      }
     } catch (error) {
       console.error('Failed to save scan history:', error);
     }

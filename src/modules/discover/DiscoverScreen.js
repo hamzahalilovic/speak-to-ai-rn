@@ -122,7 +122,7 @@ const DiscoverScreen = () => {
         <Pressable
           onPress={() => setSelectedTab('preset')}
           style={[styles.tab, selectedTab === 'preset' && styles.activeTab]}>
-          <Text style={styles.tabText}>Preset AI Twins</Text>
+          <Text style={styles.tabText}>Preset</Text>
         </Pressable>
         <Pressable
           onPress={() => setSelectedTab('discovered')}
@@ -130,7 +130,7 @@ const DiscoverScreen = () => {
             styles.tab,
             selectedTab === 'discovered' && styles.activeTab,
           ]}>
-          <Text style={styles.tabText}>Discovered AI Twins</Text>
+          <Text style={styles.tabText}>Discovered</Text>
         </Pressable>
       </View>
 
