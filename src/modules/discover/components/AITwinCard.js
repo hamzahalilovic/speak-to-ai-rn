@@ -31,8 +31,7 @@ const AITwinCard = ({
       shadow="2"
       width="100%"
       maxWidth="300px"
-      position="relative" // To position the delete button
-    >
+      position="relative">
       {deletable && (
         <Pressable
           onPress={onDelete}
@@ -51,12 +50,12 @@ const AITwinCard = ({
         bg="transparent"
         alt={`${name}-avatar`}
       />
-      <Text fontWeight="bold" fontSize={16} mb="4px">
+      <Text fontWeight="bold" fontSize={12} mb="4px">
         {name}
       </Text>
-      <Text fontSize={14} color="#666" mb="12px" textAlign="center">
-        {description && description.length > 80
-          ? `${description.substring(0, 80)}...`
+      <Text fontSize={10} color="#666" mb="12px" textAlign="center">
+        {description && description.length > 50
+          ? `${description.substring(0, 50)}...`
           : description || 'No description available'}
       </Text>
       <VStack space={3}>
