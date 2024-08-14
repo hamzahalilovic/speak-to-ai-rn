@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, Text, Switch, useTheme} from '@gluestack-ui/themed-native-base';
+import {Box, Text, Switch, useTheme} from '@gluestack-ui/themed';
 
 const ChangeThemeScreen = () => {
   return (

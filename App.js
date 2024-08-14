@@ -6,21 +6,23 @@ import React from 'react';
 import {StyleSheet} from 'react-native';
 
 import MainNavigator from './src/navigation/MainNavigator';
-import {NativeBaseProvider} from '@gluestack-ui/themed-native-base';
+import {GluestackUIProvider} from '@gluestack-ui/themed';
 
 import AppWrapper from './src/components/AppWrapper';
 
 import {AppContextProvider} from './src/context/AppContext';
 
+import {config} from '@gluestack-ui/config';
+
 const App = () => {
   return (
-    <NativeBaseProvider>
+    <GluestackUIProvider config={config}>
       <AppWrapper>
         <AppContextProvider>
           <MainNavigator />
         </AppContextProvider>
       </AppWrapper>
-    </NativeBaseProvider>
+    </GluestackUIProvider>
   );
 };
 

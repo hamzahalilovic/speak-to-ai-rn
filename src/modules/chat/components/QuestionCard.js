@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 
-import {View, Text} from '@gluestack-ui/themed-native-base';
+import {View, Text} from '@gluestack-ui/themed';
 
 const QuestionCard = ({message}) => {
   return (

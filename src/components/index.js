@@ -18,7 +18,7 @@ import {
   Spacer,
   Card,
   Slide,
-} from '@gluestack-ui/themed-native-base';
+} from '@gluestack-ui/themed';
 import {FaExclamationCircle, FaThumbsDown, FaThumbsUp} from 'react-icons/fa';
 import {MdOutlinePrivacyTip} from 'react-icons/md';
 import {PiWarningCircleLight} from 'react-icons/pi';

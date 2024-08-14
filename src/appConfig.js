@@ -1,4 +1,4 @@
-import {extendTheme} from '@gluestack-ui/themed-native-base';
+
 import styled from 'styled-components/native';
 
 import {NEXT_PUBLIC_CONTENT_LANGUAGE} from '@env';
@@ -36,13 +36,6 @@ export const buttonTheme = {
   },
 };
 
-export const theme = extendTheme({
-  fonts: {
-    // body: nextFont.style.fontFamily,
-    // heading: nextFont.style.fontFamily,
-  },
-  ...buttonTheme,
-});
 
 export const checkLanguage = true;
 export const showExamples = false;

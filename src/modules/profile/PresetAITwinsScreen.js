@@ -7,7 +7,7 @@ import {
   VStack,
   Center,
   ScrollView,
-} from '@gluestack-ui/themed-native-base';
+} from '@gluestack-ui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AI_TWINS_PRESET_KEY = '/aiTwins/preset';

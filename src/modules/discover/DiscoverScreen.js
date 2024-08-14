@@ -3,10 +3,11 @@ import {View, FlatList, StyleSheet, TextInput, Alert} from 'react-native';
 import {
   Text,
   Button,
+  ButtonText,
   VStack,
   Box,
   Pressable,
-} from '@gluestack-ui/themed-native-base';
+} from '@gluestack-ui/themed';
 import {
   useFocusEffect,
   useNavigation,
@@ -16,6 +17,7 @@ import AITwinCard from './components/AITwinCard';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useAppContext} from '../../context/AppContext';
 import {
+  getDiscoveredAITwins,
   getPresetAITwins,
   saveDiscoveredAITwins,
 } from '../discover/utils/aiTwinsStorage';
@@ -97,7 +99,9 @@ const DiscoverScreen = () => {
       const updatePresetAITwins = async () => {
         // Assuming you're getting the updated preset twins
         const presetTwins = await getPresetAITwins();
+
         setAiTwinsPreset(presetTwins);
+        setAiTwinsDiscovered(aiTwinsDiscovered);
       };
 
       updatePresetAITwins();
@@ -189,9 +193,10 @@ const DiscoverScreen = () => {
             <Button
               onPress={handleDeleteAllTwinsDiscovered}
               mt={4}
-              colorScheme="red"
-              variant="outline">
-              Delete All Discovered AI Twins
+              variant="link">
+              <ButtonText color="red">
+                Delete All Discovered AI Twins
+              </ButtonText>
             </Button>
           )}
         </>

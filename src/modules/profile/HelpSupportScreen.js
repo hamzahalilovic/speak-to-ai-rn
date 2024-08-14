@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, Button} from '@gluestack-ui/themed-native-base';
+import {Text, View, Button} from '@gluestack-ui/themed';
 
 const HelpSupportScreen = () => {
   return (

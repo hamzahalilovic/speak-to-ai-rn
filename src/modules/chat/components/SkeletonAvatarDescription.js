@@ -1,5 +1,5 @@
 import React from 'react';
-import {Center, Skeleton, VStack} from '@gluestack-ui/themed-native-base';
+import {Center, Skeleton, VStack} from '@gluestack-ui/themed';
 
 const SkeletonAvatarDescription = () => {
   return (

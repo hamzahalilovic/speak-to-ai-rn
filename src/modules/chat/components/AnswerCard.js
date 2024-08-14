@@ -6,7 +6,8 @@ import {
   Avatar,
   Button,
   Icon,
-} from '@gluestack-ui/themed-native-base';
+  ButtonText,
+} from '@gluestack-ui/themed';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {useAppContext} from '../../../context/AppContext';
@@ -34,7 +35,7 @@ const AnswerCard = ({
             <Text fontSize={14} fontWeight="bold">
               {knowledgeBase.title}
             </Text>
-            {/* <Button
+            <Button
               size="xs"
               backgroundColor={isAdded ? '#4CAF50' : '#F5F5F5'}
               onPress={handleAddTwin}
@@ -44,9 +45,9 @@ const AnswerCard = ({
                 )
               }>
               <Text color={isAdded ? '#fff' : '#2D313B'}>
-                {isAdded ? 'Added' : 'Add AI'}
+                <ButtonText>{isAdded ? 'Added' : 'Add AI'}</ButtonText>
               </Text>
-            </Button> */}
+            </Button>
           </HStack>
         </Box>
       </HStack>

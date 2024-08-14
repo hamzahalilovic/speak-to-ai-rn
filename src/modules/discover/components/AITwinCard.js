@@ -5,11 +5,14 @@ import {
   Avatar,
   Text,
   Button,
+  ButtonText,
   Icon,
   HStack,
   Pressable,
   Image,
-} from '@gluestack-ui/themed-native-base';
+  ButtonIcon,
+  AvatarImage,
+} from '@gluestack-ui/themed';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const AITwinCard = ({
@@ -25,58 +28,55 @@ const AITwinCard = ({
   return (
     <Box
       bg="#f2f2f2"
-      borderRadius="10px"
-      padding="16px"
+      borderRadius={10}
+      padding={16}
       alignItems="center"
-      shadow="2"
-      width="100%"
-      maxWidth="300px"
+      shadow={2}
       position="relative">
       {deletable && (
         <Pressable
           onPress={onDelete}
           position="absolute"
-          top={2}
-          right={1}
+          top={4}
+          right={4}
           zIndex={1}>
-          <Icon as={Ionicons} name="trash" size={25} color="red.500" />
+          <Icon as={Ionicons} name="close" size={25} color="red" />
         </Pressable>
       )}
-
-      <Image
-        size={65}
-        source={{uri: avatar}}
-        mb="12px"
-        bg="transparent"
-        alt={`${name}-avatar`}
-      />
-      <Text fontWeight="bold" fontSize={12} mb="4px">
-        {name}
-      </Text>
-      <Text fontSize={10} color="#666" mb="12px" textAlign="center">
-        {description && description.length > 50
-          ? `${description.substring(0, 50)}...`
-          : description || 'No description available'}
-      </Text>
-      <VStack space={3}>
-        <Button bg="#2d2d2d" _text={{color: '#fff'}} onPress={onChatPress}>
-          Chat
-        </Button>
-        <Button
-          size={'xs'}
-          bg={isAdded ? '#4CAF50' : '#f2f2f2'}
-          _text={{color: isAdded ? '#fff' : '#2D313B'}}
-          onPress={onAddOrRemove}
-          leftIcon={
-            isAdded ? (
-              <Icon as={Ionicons} name="checkmark" color="#fff" size="sm" />
-            ) : (
-              <Icon as={Ionicons} name="add" color="#2D313B" size="sm" />
-            )
-          }>
-          {isAdded ? 'Added' : 'Add AI'}
-        </Button>
-      </VStack>
+      <Avatar size="lg" bg="transparent">
+        <AvatarImage
+          source={{uri: avatar}}
+          mb={12}
+          bg="transparent"
+          alt={`${name}-avatar`}
+        />
+      </Avatar>
+      <Box h={25}>
+        <Text fontWeight="bold" fontSize={14} mb={4}>
+          {name && name.length > 20
+            ? `${name.substring(0, 19)}...`
+            : name || 'No name available'}
+        </Text>
+      </Box>
+      <Box h={45}>
+        <Text fontWeight="normal" fontSize={12} mb={4}>
+          {description && description.length > 50
+            ? `${description.substring(0, 50)}...`
+            : description || 'No description available'}
+        </Text>
+      </Box>
+      <Button size="sm" bg="#2d2d2d" onPress={onChatPress} mt={4}>
+        <ButtonText color="#fff">Chat</ButtonText>
+      </Button>
+      <Button
+        disabled={isAdded}
+        size="xs"
+        variant="link"
+        onPress={onAddOrRemove}>
+        <ButtonText color={isAdded ? '#4CAF50' : '#2d2d2d'}>
+          {isAdded ? 'Added' : '+ Add AI'}
+        </ButtonText>
+      </Button>
     </Box>
   );
 };

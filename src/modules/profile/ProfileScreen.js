@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, TouchableOpacity} from 'react-native';
-import {Text, VStack, HStack, Icon} from '@gluestack-ui/themed-native-base';
+import {Text, VStack, HStack, Icon} from '@gluestack-ui/themed';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ProfileScreen = ({navigation}) => {

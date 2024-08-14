@@ -2,16 +2,19 @@ import React, {useState, useEffect} from 'react';
 import {View, FlatList, StyleSheet, Alert} from 'react-native';
 import {
   Button,
+  ButtonText,
   Text,
   Box,
   VStack,
-  Input,
   Spinner,
   Image,
   Modal,
+  ModalContent,
+  ModalCloseButton,
+  ModalHeader,
+  ModalBody,
   Center,
-  Flex,
-} from '@gluestack-ui/themed-native-base';
+} from '@gluestack-ui/themed';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HTMLParser from 'react-native-html-parser';
@@ -209,15 +212,17 @@ const ScannerScreen = () => {
     <View style={styles.container}>
       {isLoading && (
         <Center mt={4}>
-          <Spinner size="lg" color="emerald.500" />
+          <Spinner size={24} color="emerald.500" />
           <Text>Loading...</Text>
         </Center>
       )}
       <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
-        <Modal.Content>
-          <Modal.CloseButton />
-          <Modal.Header>AI Twin Found</Modal.Header>
-          <Modal.Body>
+        <ModalContent>
+          <ModalCloseButton />
+          <ModalHeader>
+            <Text>AI Twin Found</Text>
+          </ModalHeader>
+          <ModalBody>
             {currentAiTwin && (
               <VStack space={4} alignItems="center">
                 <Image
@@ -229,7 +234,6 @@ const ScannerScreen = () => {
                 <Text fontWeight="bold" mt={2}>
                   {currentAiTwin.title}
                 </Text>
-                {/* <Text mt={2}>{currentAiTwin.description}</Text> */}
                 {aiTwinsDiscovered.some(
                   twin =>
                     twin.knowledgebaseId === currentAiTwin.knowledgebaseId,
@@ -241,13 +245,13 @@ const ScannerScreen = () => {
                   <Button
                     mt={2}
                     onPress={() => handleAddToDiscover(currentAiTwin)}>
-                    Add to Discover
+                    <ButtonText>Add to Discover</ButtonText>
                   </Button>
                 )}
               </VStack>
             )}
-          </Modal.Body>
-        </Modal.Content>
+          </ModalBody>
+        </ModalContent>
       </Modal>
       <Text fontSize={24} fontWeight={600} mb={4}>
         AI Twin Scanner
@@ -256,12 +260,12 @@ const ScannerScreen = () => {
         bg="#2D313B"
         onPress={() => navigation.navigate('QRCodeScanner')}
         mb={4}>
-        Scan QR Code
+        <ButtonText>Scan QR Code</ButtonText>
       </Button>
       <Button bg="#2D313B" onPress={handleFetchFromUrl} mb={4}>
-        Enter URL
+        <ButtonText>Enter URL</ButtonText>
       </Button>
-      <Flex
+      <Box
         flexDirection="row"
         justifyContent="space-between"
         alignItems="center"
@@ -272,7 +276,7 @@ const ScannerScreen = () => {
         <Text onPress={handleClearHistory} color="red">
           Clear Scan History
         </Text>
-      </Flex>
+      </Box>
 
       <FlatList
         data={history}
@@ -300,7 +304,7 @@ const ScannerScreen = () => {
                   mt={2}
                   size="sm"
                   onPress={() => handleFetchFromHistory(item)}>
-                  Add to Discover
+                  <ButtonText>Add to Discover</ButtonText>
                 </Button>
               )}
             </Box>

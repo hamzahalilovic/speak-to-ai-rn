@@ -16,7 +16,7 @@ import {
   Button,
   Text,
   View,
-} from '@gluestack-ui/themed-native-base';
+} from '@gluestack-ui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useAppContext} from '../../context/AppContext';
 import Icon from 'react-native-vector-icons/Ionicons';

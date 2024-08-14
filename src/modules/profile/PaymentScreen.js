@@ -7,7 +7,7 @@ import {
   Button,
   Icon,
   Spinner,
-} from '@gluestack-ui/themed-native-base';
+} from '@gluestack-ui/themed';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as RNIap from 'react-native-iap';
 
@@ -78,7 +78,7 @@ const PaymentScreen = () => {
               mt={4}
               onPress={handlePurchase}
               backgroundColor="green.500"
-              _text={{color: '#fff'}}
+              // _text={{color: '#fff'}}
               isDisabled={loading}>
               {loading ? (
                 <Spinner color="white" />

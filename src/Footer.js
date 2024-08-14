@@ -5,7 +5,7 @@ import {
   TextArea,
   IconButton,
   useTheme,
-} from '@gluestack-ui/themed-native-base';
+} from '@gluestack-ui/themed';
 // import {FiSend} from 'react-icons/fi';
 import {EVALS, themeColor} from './appConfig';
 import autosize from 'autosize';
@@ -83,10 +83,10 @@ const Footer = forwardRef(({newMessage, onMounted}, ref) => {
             newMessage(e);
           }
         }}
-        _icon={{
-          // color: theme.colors[themeColor],
-          color: 'red',
-        }}
+        // _icon={{
+        //   // color: theme.colors[themeColor],
+        //   color: 'red',
+        // }}
       />
     </HStack>
   );

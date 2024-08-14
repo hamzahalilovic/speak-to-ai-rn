@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {VStack, Text, Box, Image, Card} from '@gluestack-ui/themed-native-base';
+import {VStack, Text, Box, Image, Card} from '@gluestack-ui/themed';
 
 function capitalizeNames(inputString) {
   inputString = inputString.toLowerCase();

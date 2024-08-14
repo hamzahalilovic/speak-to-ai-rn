@@ -9,7 +9,7 @@ import Header from '../../Header2';
 // import Welcome from '../../Welcome';
 import {
   // View,
-  // ScrollView,
+  ScrollView,
   TextInput,
   Dimensions,
   useWindowDimensions,
@@ -26,7 +26,6 @@ import {clientInit} from '../../utils/getInit';
 
 import AnswerCard from './components/AnswerCard';
 import QuestionCard from './components/QuestionCard';
-import ChatlogContainer from './components/ChatlogContainer';
 
 // import {QuestionCard} from '../../components/index';
 
@@ -49,38 +48,26 @@ import WelcomeContainer from '../../Welcome';
 import {initTextData} from '../../utils/initTextData';
 import {
   View,
-  ScrollView,
+  // ScrollView,
   Box,
-  Button,
   Center,
-  Flex,
   VStack,
-  useToast,
-  extendTheme,
   Text,
-  Spinner,
   Alert,
-  Card,
   Avatar,
   HStack,
   KeyboardAvoidingView,
-  Skeleton,
-} from '@gluestack-ui/themed-native-base';
+  AvatarFallbackText,
+  AvatarImage,
+  Image,
+} from '@gluestack-ui/themed';
 
-import {
-  NEXT_PUBLIC_APP_ID,
-  NEXT_PUBLIC_APP_DEV,
-  APP_ID,
-  MIDDLEWARE_API_URL,
-  XMIDDLEWARE_API_URL,
-} from '@env';
+import {APP_ID} from '@env';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import ChatInput from './components/ChatInput';
 import {useAppContext} from '../../context/AppContext';
 import CustomHeader from './components/CustomHeader';
 import {getThreads, saveThread, saveThreads} from './utils/threadsStorage';
-import SkeletonAvatarDescription from './components/SkeletonAvatarDescription';
-import SkeletonAnswerCard from './components/SkeletonAnswerCard';
 
 import HTMLParser from 'react-native-html-parser';
 
@@ -143,7 +130,7 @@ const ChatScreen = () => {
   const statement = useRef();
   const [status, setStatus] = useState('ready');
 
-  const toast = useToast();
+  // const toast = useToast();
   const disclaimerToastID = 'disclaimer-toast-init';
 
   // console.log('props', props);
@@ -249,20 +236,20 @@ const ChatScreen = () => {
 
   console.log('session', sessionID);
 
-  const showDisclaimerToast = useCallback(() => {
-    // if (!toast.isActive(disclaimerToastID)) {
-    //   toast.show({
-    //     id: disclaimerToastID,
-    //     title: 'Disclaimer',
-    //     description:
-    //       'This is my personal AI twin. It interprets information I have provided. Please note that any intentional misuse is recorded.',
-    //     duration: null,
-    //     isClosable: true,
-    //   });
-    // } else {
-    //   return null;
-    // }
-  }, [toast]);
+  // const showDisclaimerToast = useCallback(() => {
+  //   // if (!toast.isActive(disclaimerToastID)) {
+  //   //   toast.show({
+  //   //     id: disclaimerToastID,
+  //   //     title: 'Disclaimer',
+  //   //     description:
+  //   //       'This is my personal AI twin. It interprets information I have provided. Please note that any intentional misuse is recorded.',
+  //   //     duration: null,
+  //   //     isClosable: true,
+  //   //   });
+  //   // } else {
+  //   //   return null;
+  //   // }
+  // }, [toast]);
 
   const functionContent = useRef();
 
@@ -280,20 +267,20 @@ const ChatScreen = () => {
     })),
   );
 
-  useEffect(() => {
-    //console.log("LOADING...", state.loading);
-    if (!state.loading && !getDisclaimerStatus()) {
-      setTimeout(() => {
-        showDisclaimerToast();
-        setDisclaimerStatus(true);
-      }, 300);
-    }
-  }, [
-    state.loading,
-    showDisclaimerToast,
-    getDisclaimerStatus,
-    setDisclaimerStatus,
-  ]);
+  // useEffect(() => {
+  //   //console.log("LOADING...", state.loading);
+  //   if (!state.loading && !getDisclaimerStatus()) {
+  //     setTimeout(() => {
+  //       showDisclaimerToast();
+  //       setDisclaimerStatus(true);
+  //     }, 300);
+  //   }
+  // }, [
+  //   state.loading,
+  //   showDisclaimerToast,
+  //   getDisclaimerStatus,
+  //   setDisclaimerStatus,
+  // ]);
 
   console.log('statement1', statement);
 
@@ -439,7 +426,7 @@ const ChatScreen = () => {
         });
 
         if (error) {
-          toast.show({title: error.message || error.name, status: 'error'});
+          // toast.show({title: error.message || error.name, status: 'error'});
           return;
         }
 
@@ -637,11 +624,11 @@ const ChatScreen = () => {
       // reset example click status...
       exampleQuestionClicked.current = false;
       if (results.error) {
-        toast({
-          title: results.error.message || results.error.name,
-          status: 'error',
-          description: results.error.cause.info,
-        });
+        // toast({
+        //   title: results.error.message || results.error.name,
+        //   status: 'error',
+        //   description: results.error.cause.info,
+        // });
         const msgIndex = messageList.length - 1;
         const updatedMessageList = [...messageList];
         updatedMessageList[msgIndex][1].streaming = false;
@@ -787,11 +774,11 @@ const ChatScreen = () => {
       );
 
       if (dataError) {
-        toast({
-          title: dataError.message || dataError.name,
-          status: 'error',
-          description: dataError.cause.info,
-        });
+        // toast({
+        //   title: dataError.message || dataError.name,
+        //   status: 'error',
+        //   description: dataError.cause.info,
+        // });
         console.log('dataerror', dataError);
         const msgIndex = messageList.length - 1;
         const updatedMessageList = [...messageList];
@@ -1018,126 +1005,107 @@ const ChatScreen = () => {
 
   return (
     <KeyboardAvoidingView
-      style={{flex: 1, backgroundColor: '#f5f5f5', width: '100%'}}
+      style={{
+        flex: 1,
+        backgroundColor: '#f5f5f5',
+        width: '100%',
+      }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <View style={{flex: 1, backgroundColor: '#f5f5f5', width: '100%',paddingTop: 30}}>
-        <CustomHeader
-          knowledgebaseId={knowledgebase.knowledgebaseId}
-          name={knowledgebase.title}
-          avatar={knowledgebase.avatar}
-          handleNewThread={handleNewThread}
-          isNewThreadDisabled={messageList.length === 0}
-        />
-        {state.loading ? (
-          <SkeletonAvatarDescription />
-        ) : state.errors ? (
-          <Alert status="error">Invalid username</Alert>
-        ) : (
-          <>
-            <ScrollView
-              ref={scrollViewRef}
-              onContentSizeChange={(contentWidth, contentHeight) => {
-                setContentHeight(contentHeight); // Track the content height
-              }}
-              style={{flex: 1}}
-              contentContainerStyle={{paddingBottom: 80, width: '100%'}}>
-              {messageList.length === 0 ? (
-                <Center
-                  style={{
-                    paddingHorizontal: 24,
-                    paddingTop: 32,
-                  }}>
-                  <Avatar
-                    size="2xl"
+      <CustomHeader
+        knowledgebaseId={knowledgebase.knowledgebaseId}
+        name={knowledgebase.title}
+        avatar={knowledgebase.avatar}
+        handleNewThread={handleNewThread}
+        isNewThreadDisabled={messageList.length === 0}
+      />
+      {state.loading ? (
+        <Text>loading</Text>
+      ) : state.errors ? (
+        <Alert status="error">Invalid username</Alert>
+      ) : (
+        <>
+          <ScrollView
+            ref={scrollViewRef}
+            style={{flex: 1}}
+            contentContainerStyle={{paddingBottom: 80, width: '100%'}}
+            onContentSizeChange={(contentWidth, contentHeight) => {
+              setContentHeight(contentHeight); // Track the content height
+            }}>
+            {messageList.length === 0 ? (
+              <Center
+                style={{
+                  paddingHorizontal: 24,
+                  paddingTop: 32,
+                }}>
+                <Avatar bg="transparent" size="2xl" mb={5}>
+                  <AvatarImage
+                    alt="avatar"
                     source={{uri: knowledgebase.avatar}}
-                    mb="4"
-                    bg="transparent"
                   />
-                  <Text fontSize={12} color="gray.500" textAlign="center">
-                    {knowledgebase.description}
-                  </Text>
-                </Center>
-              ) : (
-                <ChatlogContainer
-                  sidebarShown={sidebarShown}
-                  style={{width: '100%'}}>
-                  <HStack gap="0px" width="100%" height="100%">
-                    <VStack
-                      h="100%"
-                      w="100%"
-                      mt="-20px"
-                      mb="-10px"
-                      space={1}
-                      color="black">
-                      <Flex
-                        ref={messagesContainerRef}
-                        id="messages_container"
-                        style={{flex: 1, width: '100%'}}>
-                        <Box
-                          id="messages"
-                          ref={messagesRef}
-                          style={{flex: 1, width: '100%'}}>
-                          <Box padding="24px" paddingBottom="0px">
-                            {messageList.map((message, key) => (
-                              <Box
-                                key={`chats-${key}`}
-                                className="messageContainer">
-                                <QuestionCard
-                                  key={`question-${key}`}
-                                  message={message[0]}
-                                />
+                </Avatar>
+                <Text fontSize={14} color="gray.500" textAlign="center">
+                  {knowledgebase.description}
+                </Text>
+              </Center>
+            ) : (
+              <VStack>
+                <Box ref={messagesContainerRef} id="messages_container">
+                  <Box id="messages" ref={messagesRef}>
+                    <Box padding="24px" paddingBottom="0px">
+                      {messageList.map((message, key) => (
+                        <Box key={`chats-${key}`} className="messageContainer">
+                          <QuestionCard
+                            key={`question-${key}`}
+                            message={message[0]}
+                          />
 
-                                <AnswerCard
-                                  knowledgeBase={knowledgebase}
-                                  message={message[1]}
-                                  isAdded={isAITwinAdded(
-                                    knowledgebase.knowledgebaseId,
-                                  )}
-                                  addAITwinToHome={addAITwinToHome}
-                                  handleFeedbackClick={handleFeedbackClick}
-                                  language={language}
-                                />
-                              </Box>
-                            ))}
-                            {/* {queryActive && <SkeletonAnswerCard />} */}
-
-                            <Text
-                              style={{
-                                height: '10px',
-                                width: '100%',
-                                marginBottom: '25px',
-                              }}
-                              ref={scrollSpan}
-                              id="scroll-marker"
-                            />
-                          </Box>
+                          <AnswerCard
+                            knowledgeBase={knowledgebase}
+                            message={message[1]}
+                            isAdded={isAITwinAdded(
+                              knowledgebase.knowledgebaseId,
+                            )}
+                            addAITwinToHome={addAITwinToHome}
+                            handleFeedbackClick={handleFeedbackClick}
+                            language={language}
+                          />
                         </Box>
-                      </Flex>
-                    </VStack>
-                  </HStack>
-                </ChatlogContainer>
-              )}
-            </ScrollView>
-            <Box
-              style={{
-                position: 'absolute',
-                bottom: 20,
-                left: 0,
-                right: 0,
-                zIndex: 9999,
-              }}>
-              <ChatInput
-                ref={statement}
-                value={tempInputValue}
-                onChangeText={setTempInputValue}
-                onSubmitEditing={() => handleNewMessage(tempInputValue)}
-                placeholder="Ask anything..."
-                editable={!queryActive}
-              />
-            </Box>
-          </>
-        )}
-      </View>
+                      ))}
+
+                      <Text
+                        style={{
+                          height: '10px',
+                          width: '100%',
+                          marginBottom: '25px',
+                        }}
+                        ref={scrollSpan}
+                        id="scroll-marker"
+                      />
+                    </Box>
+                  </Box>
+                </Box>
+              </VStack>
+            )}
+          </ScrollView>
+          <Box
+            style={{
+              position: 'absolute',
+              bottom: 20,
+              left: 0,
+              right: 0,
+              zIndex: 9999,
+            }}>
+            <ChatInput
+              ref={statement}
+              value={tempInputValue}
+              onChangeText={setTempInputValue}
+              onSubmitEditing={() => handleNewMessage(tempInputValue)}
+              placeholder="Ask anything..."
+              editable={!queryActive}
+            />
+          </Box>
+        </>
+      )}
     </KeyboardAvoidingView>
   );
 };
