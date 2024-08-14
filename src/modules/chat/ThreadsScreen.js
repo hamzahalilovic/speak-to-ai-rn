@@ -3,6 +3,7 @@ import {View, FlatList, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {
   Button,
+  ButtonText,
   HStack,
   Text,
   Box,
@@ -140,11 +141,12 @@ const ThreadsScreen = ({route}) => {
         keyExtractor={item => item.id}
         renderItem={({item}) => (
           <HStack
+            space="sm"
             justifyContent="space-between"
             alignItems="center"
-            padding={4}
+            padding={8}
             borderBottomWidth={1}
-            borderBottomColor="gray.200">
+            borderBottomColor="lightgray">
             <Pressable onPress={() => handleThreadPress(item)} flex={1}>
               <Text>{item.title}</Text>
             </Pressable>
@@ -180,10 +182,10 @@ const ThreadsScreen = ({route}) => {
                     as={Ionicons}
                     name="trash"
                     size="sm"
-                    color="red.500"
+                    color="red"
                     mr={2}
                   />
-                  <Text color="red.500">Delete</Text>
+                  <Text color="red">Delete</Text>
                 </HStack>
               </Menu.Item>
             </Menu>
@@ -193,11 +195,10 @@ const ThreadsScreen = ({route}) => {
 
       <Button
         mt={4}
-        borderColor="red.500"
+        borderColor="red"
         variant="outline"
-        colorScheme="red"
         onPress={handleDeleteAllThreads}>
-        Delete All Threads
+        <ButtonText color="red">Delete All Threads</ButtonText>
       </Button>
     </View>
   );

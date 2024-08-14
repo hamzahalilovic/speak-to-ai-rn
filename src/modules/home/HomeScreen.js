@@ -5,9 +5,11 @@ import {
   HStack,
   Text,
   Avatar,
+  AvatarImage,
   Menu,
   Icon,
   Button,
+  VStack,
 } from '@gluestack-ui/themed';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
@@ -50,7 +52,7 @@ const HomeScreen = () => {
   return (
     <View
       style={{flex: 1, padding: 16, paddingTop: 55, backgroundColor: '#fff'}}>
-      <Text fontSize={24} fontWeight={600} mb={4}>
+      <Text fontSize={24} fontWeight={600} mb={15}>
         Your AI's
       </Text>
       <FlatList
@@ -59,20 +61,17 @@ const HomeScreen = () => {
         renderItem={({item}) => (
           <TouchableOpacity onPress={() => handleChatPress(item)}>
             <HStack
+              space="sm"
               alignItems="center"
               padding={4}
               borderBottomWidth={1}
-              borderBottomColor="gray.200"
+              borderBottomColor="lightgray"
               accessibilityRole="button"
               accessibilityLabel={`Chat with ${item.title}`}
               accessibilityHint="Double tap to chat">
-              <Avatar
-                bg="transparent"
-                source={{uri: item.avatar}}
-                size="40px"
-                mr={4}
-                accessibilityIgnoresInvertColors={true} // for images
-              />
+              <Avatar bg="transparent" size="md" mr={4}>
+                <AvatarImage alt="avatar" source={{uri: item.avatar}} />
+              </Avatar>
               <Text
                 fontSize={16}
                 flex={1}
@@ -108,10 +107,10 @@ const HomeScreen = () => {
                       as={Ionicons}
                       name="trash"
                       size="sm"
-                      color="red.500"
+                      color="red"
                       mr={2}
                     />
-                    <Text color="red.500">Remove</Text>
+                    <Text color="red">Remove</Text>
                   </HStack>
                 </Menu.Item>
               </Menu>
