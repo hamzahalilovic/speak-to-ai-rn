@@ -9,9 +9,9 @@ import {
   ScrollView,
 } from '@gluestack-ui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import HapticFeedback from 'react-native-haptic-feedback';
 
 const AI_TWINS_PRESET_KEY = '/aiTwins/preset';
-
 import {aiTwins} from './data/aiTwinsPreset';
 
 const PresetAITwinsScreen = () => {
@@ -27,6 +27,9 @@ const PresetAITwinsScreen = () => {
   }, []);
 
   const toggleTwin = async twin => {
+    // Trigger haptic feedback when a twin is pressed
+    HapticFeedback.trigger('selection');
+
     let updatedTwins;
     if (presetTwins.some(item => item.userId === twin.userId)) {
       updatedTwins = presetTwins.filter(item => item.userId !== twin.userId);

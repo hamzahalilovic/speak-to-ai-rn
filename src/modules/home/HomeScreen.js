@@ -9,12 +9,13 @@ import {
   Menu,
   Icon,
   Button,
+  MenuItem,
   VStack,
 } from '@gluestack-ui/themed';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {useAppContext} from '../../context/AppContext';
-
+import HapticFeedback from 'react-native-haptic-feedback';
 const HomeScreen = () => {
   const navigation = useNavigation();
   const {savedAITwins, removeAITwinFromHome, setSelectedAI} = useAppContext();
@@ -45,6 +46,7 @@ const HomeScreen = () => {
   };
 
   const handleChatPress = twin => {
+    HapticFeedback.trigger('impactLight');
     setSelectedAI(twin);
     navigation.navigate('Chat');
   };
@@ -94,9 +96,7 @@ const HomeScreen = () => {
                     </TouchableOpacity>
                   );
                 }}>
-                <Menu.Item
-                  onPress={() => handleShowInfo(item)}
-                  textValue="Info">
+                <MenuItem onPress={() => handleShowInfo(item)} textValue="Info">
                   <HStack alignItems="center">
                     <Icon
                       as={Ionicons}
@@ -106,8 +106,9 @@ const HomeScreen = () => {
                     />
                     <Text>Info</Text>
                   </HStack>
-                </Menu.Item>
-                <Menu.Item onPress={() => handleRemoveTwin(item.userId)}>
+                </MenuItem>
+                <MenuItem
+                  onPress={() => handleRemoveTwin(item.knowledgebaseId)}>
                   <HStack alignItems="center">
                     <Icon
                       as={Ionicons}
@@ -118,7 +119,7 @@ const HomeScreen = () => {
                     />
                     <Text color="red">Remove</Text>
                   </HStack>
-                </Menu.Item>
+                </MenuItem>
               </Menu>
             </HStack>
           </TouchableOpacity>

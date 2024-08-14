@@ -891,6 +891,7 @@ const ChatScreen = () => {
         uniqueId: uniqueId.current,
         answer: '',
         streaming: true, // initially set to true
+        isNew: true, // Mark this message as new
       };
 
       const updatedMessages = [
@@ -940,18 +941,25 @@ const ChatScreen = () => {
   useEffect(() => {
     const fetchThreads = async () => {
       const loadedThreads = await getThreads(selectedAI.knowledgebaseId);
-      setThreads(loadedThreads);
+      const threadsWithoutNewFlag = loadedThreads.map(thread => ({
+        ...thread,
+        messages: thread.messages.map(message => ({
+          ...message,
+          isNew: false, // Mark all loaded messages as not new
+        })),
+      }));
+      setThreads(threadsWithoutNewFlag);
 
-      if (loadedThreads.length > 0) {
+      if (threadsWithoutNewFlag.length > 0) {
         if (currentThreadId) {
-          const selectedThread = loadedThreads.find(
+          const selectedThread = threadsWithoutNewFlag.find(
             thread => thread.id === currentThreadId,
           );
           setMessageList(selectedThread?.messages || []);
         } else {
-          const firstThreadId = loadedThreads[0].id;
+          const firstThreadId = threadsWithoutNewFlag[0].id;
           setCurrentThreadId(firstThreadId);
-          setMessageList(loadedThreads[0].messages);
+          setMessageList(threadsWithoutNewFlag[0].messages);
         }
       } else {
         handleNewThread(); // Safely create a new thread if none exist

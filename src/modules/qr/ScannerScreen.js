@@ -36,6 +36,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import HapticFeedback from 'react-native-haptic-feedback';
+
 const ScannerScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -122,6 +124,8 @@ const ScannerScreen = () => {
   }, []);
 
   const handleFetchFromUrl = () => {
+    HapticFeedback.trigger('impactLight');
+
     // Show the alert with a text input to enter the URL
     Alert.prompt(
       'Enter URL',
@@ -218,6 +222,7 @@ const ScannerScreen = () => {
   };
 
   const handleClearHistory = async () => {
+    HapticFeedback.trigger('impactLight');
     await AsyncStorage.removeItem('scanHistory');
     setHistory([]);
   };
@@ -227,8 +232,7 @@ const ScannerScreen = () => {
       <VStack space="md">
         {isLoading && (
           <Center mt={4}>
-            <Spinner size={24} color="emerald" />
-            <Text>Loading...</Text>
+            <Spinner size={24} />
           </Center>
         )}
         <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
@@ -301,7 +305,10 @@ const ScannerScreen = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('QRCodeScanner')}>
+            onPress={() => {
+              HapticFeedback.trigger('impactLight');
+              navigation.navigate('QRCodeScanner');
+            }}>
             <MaterialCommunityIcons
               name="qrcode-scan"
               size={75}

@@ -22,6 +22,8 @@ import {
   saveDiscoveredAITwins,
 } from '../discover/utils/aiTwinsStorage';
 
+import HapticFeedback from 'react-native-haptic-feedback';
+
 const DiscoverScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTab, setSelectedTab] = useState('preset');
@@ -38,6 +40,7 @@ const DiscoverScreen = () => {
   const navigation = useNavigation();
 
   const handleAddOrRemoveTwinHome = twin => {
+    HapticFeedback.trigger('impactLight');
     if (isAITwinAdded(twin.knowledgebaseId)) {
       removeAITwinFromHome(twin.knowledgebaseId);
     } else {
@@ -107,6 +110,14 @@ const DiscoverScreen = () => {
     }, []),
   );
 
+  const filteredPresetTwins = aiTwinsPreset.filter(twin =>
+    twin.title.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
+  const filteredDiscoveredTwins = aiTwinsDiscovered.filter(twin =>
+    twin.title.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
   return (
     <View style={styles.container}>
       <Text fontSize={24} fontWeight={600} mb={4}>
@@ -140,7 +151,7 @@ const DiscoverScreen = () => {
       {/* Conditionally Render Content Based on Active Tab */}
       {selectedTab === 'preset' && (
         <FlatList
-          data={aiTwinsPreset}
+          data={filteredPresetTwins}
           keyExtractor={item => item.id}
           numColumns={2}
           renderItem={({item}) => (
@@ -165,7 +176,7 @@ const DiscoverScreen = () => {
       {selectedTab === 'discovered' && (
         <>
           <FlatList
-            data={aiTwinsDiscovered}
+            data={filteredDiscoveredTwins}
             keyExtractor={item => item.knowledgebaseId}
             numColumns={2}
             renderItem={({item}) => (

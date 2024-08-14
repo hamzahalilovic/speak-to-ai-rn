@@ -54,7 +54,9 @@ export const AppContextProvider = ({children}) => {
   };
 
   const removeAITwinFromHome = async twinId => {
-    const updatedAITwins = savedAITwins.filter(twin => twin.id !== twinId);
+    const updatedAITwins = savedAITwins.filter(
+      twin => twin.knowledgebaseId !== twinId,
+    );
     setSavedAITwins(updatedAITwins);
     await AsyncStorage.setItem('savedAITwins', JSON.stringify(updatedAITwins));
   };

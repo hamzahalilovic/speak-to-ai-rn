@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Box,
   HStack,
@@ -11,6 +11,7 @@ import {
 } from '@gluestack-ui/themed';
 import LottieView from 'lottie-react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import HapticFeedback from 'react-native-haptic-feedback';
 import {useAppContext} from '../../../context/AppContext';
 
 const AnswerCard = ({
@@ -21,12 +22,38 @@ const AnswerCard = ({
   isAdded,
   addAITwinToHome,
 }) => {
+  const [displayedText, setDisplayedText] = useState('');
+
+  useEffect(() => {
+    if (message.isNew && message.streaming === false && displayedText === '') {
+      const totalDuration = 2000; // Total duration in milliseconds for the entire message
+      const intervalDuration = totalDuration / message.answer.length;
+
+      let index = 0;
+      const interval = setInterval(() => {
+        setDisplayedText(prev => prev + message.answer[index]);
+        index++;
+
+        // Trigger haptic feedback for each letter
+        HapticFeedback.trigger('impactLight');
+
+        if (index === message.answer.length) {
+          clearInterval(interval);
+          message.isNew = false; // Mark message as old after effect is done
+        }
+      }, intervalDuration); // Use calculated interval duration
+
+      return () => clearInterval(interval);
+    } else if (!message.isNew) {
+      setDisplayedText(message.answer);
+    }
+  }, [message.streaming]);
+
   const handleAddTwin = () => {
     if (!isAdded) {
       addAITwinToHome(knowledgeBase);
     }
   };
-  console.log('message in answer card', message);
 
   return (
     <Box padding={12} borderColor="gray">
@@ -63,7 +90,7 @@ const AnswerCard = ({
           />
         ) : (
           <Text fontSize={14} color="#333">
-            {message.answer}
+            {displayedText}
           </Text>
         )}
       </Box>

@@ -24,6 +24,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useAppContext} from '../../context/AppContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 import LottieView from 'lottie-react-native';
+import HapticFeedback from 'react-native-haptic-feedback';
 
 const QRCodeScanner = () => {
   const useGetCameraDevice = DeviceInfo.isEmulatorSync()
@@ -81,6 +82,9 @@ const QRCodeScanner = () => {
       });
 
       const contentType = response.headers.get('content-type');
+
+      setIsScanning(false);
+
       if (contentType && contentType.includes('text/html')) {
         const textData = await response.text();
         const parsed = new HTMLParser.DOMParser().parseFromString(
@@ -93,6 +97,8 @@ const QRCodeScanner = () => {
           const aiTwinData = JSON.parse(scriptTag).props.pageProps;
 
           setAiTwinData(aiTwinData);
+
+          HapticFeedback.trigger('impactMedium');
           setFetchError(false);
           saveScanToHistory(`${API_URL}${name}`, aiTwinData); // Pass both URL and AI Twin Data here
         } else {
