@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, FlatList, StyleSheet, Alert} from 'react-native';
+import {View, StyleSheet, Alert} from 'react-native';
 import {
   Button,
   ButtonText,
@@ -7,6 +7,7 @@ import {
   Box,
   VStack,
   Spinner,
+  FlatList,
   Image,
   Modal,
   ModalContent,
@@ -14,12 +15,20 @@ import {
   ModalHeader,
   ModalBody,
   Center,
+  Badge,
+  HStack,
+  BadgeText,
+  AvatarImage,
+  Avatar,
+  Divider,
 } from '@gluestack-ui/themed';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HTMLParser from 'react-native-html-parser';
 
 import {useAppContext} from '../../context/AppContext';
+
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ScannerScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -28,13 +37,14 @@ const ScannerScreen = () => {
 
   const [url, setUrl] = useState('');
   const [history, setHistory] = useState([]);
+
   const navigation = useNavigation();
   const {setAiTwinsDiscovered, aiTwinsDiscovered} = useAppContext();
 
-  const fetchAITwinData = async url => {
+  const fetchAITwinData = async inputUrl => {
     setIsLoading(true);
     try {
-      const response = await fetch(url, {
+      const response = await fetch(inputUrl, {
         method: 'GET',
         headers: {
           'Content-Type': 'text/html',
@@ -68,14 +78,12 @@ const ScannerScreen = () => {
             );
           }
 
-          if (!history.includes(url)) {
-            const updatedHistory = [...history, url];
-            setHistory(updatedHistory);
-            await AsyncStorage.setItem(
-              'scanHistory',
-              JSON.stringify(updatedHistory),
-            );
-          }
+          const updatedHistory = [...history, {url: inputUrl, aiTwinData}];
+          setHistory(updatedHistory);
+          await AsyncStorage.setItem(
+            'scanHistory',
+            JSON.stringify(updatedHistory),
+          );
         } else {
           setIsLoading(false);
           Alert.alert('Invalid URL', 'No AI Twin found for the entered URL.');
@@ -207,110 +215,143 @@ const ScannerScreen = () => {
     await AsyncStorage.removeItem('scanHistory');
     setHistory([]);
   };
-
+  console.log('history', history);
   return (
     <View style={styles.container}>
-      {isLoading && (
-        <Center mt={4}>
-          <Spinner size={24} color="emerald.500" />
-          <Text>Loading...</Text>
-        </Center>
-      )}
-      <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
-        <ModalContent>
-          <ModalCloseButton />
-          <ModalHeader>
-            <Text>AI Twin Found</Text>
-          </ModalHeader>
-          <ModalBody>
-            {currentAiTwin && (
-              <VStack space={4} alignItems="center">
-                <Image
-                  source={{uri: currentAiTwin.avatar}}
-                  alt="AI Twin Avatar"
-                  size="xl"
-                  borderRadius={100}
-                />
-                <Text fontWeight="bold" mt={2}>
-                  {currentAiTwin.title}
-                </Text>
-                {aiTwinsDiscovered.some(
-                  twin =>
-                    twin.knowledgebaseId === currentAiTwin.knowledgebaseId,
-                ) ? (
-                  <Text color="green.500" mt={2}>
-                    AI Twin added to Discover
+      <VStack space="md">
+        {isLoading && (
+          <Center mt={4}>
+            <Spinner size={24} color="emerald" />
+            <Text>Loading...</Text>
+          </Center>
+        )}
+        <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
+          <ModalContent>
+            <ModalCloseButton />
+            <ModalHeader>
+              <Text>AI Twin Found</Text>
+            </ModalHeader>
+            <ModalBody>
+              {currentAiTwin && (
+                <VStack space={4} alignItems="center">
+                  <Image
+                    source={{uri: currentAiTwin.avatar}}
+                    alt="AI Twin Avatar"
+                    size="xl"
+                    borderRadius={100}
+                  />
+                  <Text fontWeight="bold" mt={2}>
+                    {currentAiTwin.title}
                   </Text>
-                ) : (
-                  <Button
-                    mt={2}
-                    onPress={() => handleAddToDiscover(currentAiTwin)}>
-                    <ButtonText>Add to Discover</ButtonText>
-                  </Button>
-                )}
-              </VStack>
-            )}
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-      <Text fontSize={24} fontWeight={600} mb={4}>
-        AI Twin Scanner
-      </Text>
-      <Button
-        bg="#2D313B"
-        onPress={() => navigation.navigate('QRCodeScanner')}
-        mb={4}>
-        <ButtonText>Scan QR Code</ButtonText>
-      </Button>
-      <Button bg="#2D313B" onPress={handleFetchFromUrl} mb={4}>
-        <ButtonText>Enter URL</ButtonText>
-      </Button>
-      <Box
-        flexDirection="row"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={4}>
-        <Text fontSize={20} fontWeight={600}>
-          Scan History
-        </Text>
-        <Text onPress={handleClearHistory} color="red">
-          Clear Scan History
-        </Text>
-      </Box>
-
-      <FlatList
-        data={history}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => {
-          const isAlreadyAdded = aiTwinsDiscovered.some(
-            twin => twin.knowledgebaseId === item.knowledgebaseId,
-          );
-
-          return (
-            <Box
-              mb={2}
-              p={2}
-              borderWidth={1}
-              borderColor="gray.300"
-              borderRadius="md">
-              <Text>{item}</Text>
-              {isAlreadyAdded ? (
-                <Text color="green.500" mt={2} alignSelf="center">
-                  AI Twin already added
-                </Text>
-              ) : (
-                <Button
-                  bg="#2D313B"
-                  mt={2}
-                  size="sm"
-                  onPress={() => handleFetchFromHistory(item)}>
-                  <ButtonText>Add to Discover</ButtonText>
-                </Button>
+                  {aiTwinsDiscovered.some(
+                    twin =>
+                      twin.knowledgebaseId === currentAiTwin.knowledgebaseId,
+                  ) ? (
+                    <Text color="green" mt={2}>
+                      AI Twin added to Discover
+                    </Text>
+                  ) : (
+                    <Button
+                      mt={2}
+                      onPress={() => handleAddToDiscover(currentAiTwin)}>
+                      <ButtonText>Add to Discover</ButtonText>
+                    </Button>
+                  )}
+                </VStack>
               )}
-            </Box>
-          );
-        }}
-      />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+        <Text fontSize={24} fontWeight={600} mb={4}>
+          AI Twin Scanner
+        </Text>
+        <Text fontSize={16} fontWeight={400} mb={4}>
+          Enter the URL manually or scan the QR code of your AI Twin
+        </Text>
+        <Button
+          bg="#2D313B"
+          onPress={() => navigation.navigate('QRCodeScanner')}
+          mb={4}>
+          <ButtonText>Scan QR Code</ButtonText>
+        </Button>
+        <Button bg="#2D313B" onPress={handleFetchFromUrl} mb={4}>
+          <ButtonText>Enter URL</ButtonText>
+        </Button>
+        <Divider mt={20} mb={20} />
+        <Box
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={4}>
+          <Text fontSize={20} fontWeight={600}>
+            Scan History
+          </Text>
+          <Text onPress={handleClearHistory} color="red">
+            Clear Scan History
+          </Text>
+        </Box>
+
+        {history.length > 0 ? (
+          <FlatList
+            data={history}
+            h="100%"
+            keyExtractor={(item, index) => index.toString()}
+            extraData={aiTwinsDiscovered} // Ensure the FlatList re-renders when this changes
+            renderItem={({item}) => {
+              if (!item.aiTwinData) return null;
+              const isAlreadyAdded = aiTwinsDiscovered.some(
+                twin =>
+                  twin.knowledgebaseId === item.aiTwinData.knowledgebaseId,
+              );
+
+              return (
+                <Box
+                  mb={4}
+                  p={4}
+                  bg="#fff"
+                  borderWidth={1}
+                  borderColor="#e0e0e0"
+                  borderRadius={12}
+                  padding={12}
+                  shadow={2}>
+                  <HStack alignItems="center" space="sm">
+                    <Ionicons name="link-outline" size={20} color="#2D313B" />
+                    <Avatar size="sm">
+                      <AvatarImage source={{uri: item.aiTwinData.avatar}} />
+                    </Avatar>
+                    <VStack flex={1}>
+                      <Text fontWeight="bold" fontSize="lg" color="#2D313B">
+                        {item.aiTwinData.title}
+                      </Text>
+                      <Text fontSize="sm" color="#666">
+                        {item.url}
+                      </Text>
+                    </VStack>
+                  </HStack>
+                  {isAlreadyAdded ? (
+                    <Badge alignSelf="center" bg="lightgreen" size="md" mt={10}>
+                      <BadgeText fontSize={12} color="green">
+                        Added
+                      </BadgeText>
+                    </Badge>
+                  ) : (
+                    <Button
+                      bg="#4CAF50"
+                      size="xs"
+                      onPress={() => handleFetchFromHistory(item.url)}>
+                      <ButtonText fontSize={8} color="#fff">
+                        Add
+                      </ButtonText>
+                    </Button>
+                  )}
+                </Box>
+              );
+            }}
+          />
+        ) : (
+          <Text>No scan history found</Text>
+        )}
+      </VStack>
     </View>
   );
 };

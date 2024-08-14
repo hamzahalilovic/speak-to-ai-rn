@@ -14,6 +14,8 @@ import {
   Image,
   Box,
   Button,
+  ButtonText,
+  ButtonGroup,
   Text,
   View,
 } from '@gluestack-ui/themed';
@@ -45,14 +47,16 @@ const QRCodeScanner = () => {
     }
   }, [hasPermission, requestPermission]);
 
-  const saveScanToHistory = async url => {
+  const saveScanToHistory = async (url, aiTwinData) => {
     try {
       const storedHistory = await AsyncStorage.getItem('scanHistory');
       const history = storedHistory ? JSON.parse(storedHistory) : [];
 
-      // Check if the URL already exists in the history
-      if (!history.includes(url)) {
-        const updatedHistory = [...history, url];
+      // Check if the item already exists in the history
+      const isDuplicate = history.some(item => item.url === url);
+
+      if (!isDuplicate) {
+        const updatedHistory = [...history, {url, aiTwinData}];
         await AsyncStorage.setItem(
           'scanHistory',
           JSON.stringify(updatedHistory),
@@ -88,7 +92,7 @@ const QRCodeScanner = () => {
 
           setAiTwinData(aiTwinData);
           setFetchError(false);
-          saveScanToHistory(`${API_URL}${name}`);
+          saveScanToHistory(`${API_URL}${name}`, aiTwinData); // Pass both URL and AI Twin Data here
         } else {
           setFetchError(true);
         }
@@ -203,12 +207,14 @@ const QRCodeScanner = () => {
                   <Text style={{color: 'green'}}>AI Twin added</Text>
                 </Box>
               ) : (
-                <Button.Group variant="outline" space={2} mt={4}>
-                  <Button onPress={handleScanAgain}>Scan Again</Button>
-                  <Button onPress={handleAddToDiscover}>
-                    Add AI Twin to Discover
+                <ButtonGroup variant="outline" space={2} mt={4}>
+                  <Button onPress={handleScanAgain}>
+                    <ButtonText>can Again</ButtonText>
                   </Button>
-                </Button.Group>
+                  <Button onPress={handleAddToDiscover}>
+                    <ButtonText>Add AI Twin to Discover</ButtonText>
+                  </Button>
+                </ButtonGroup>
               )}
             </View>
           )}
@@ -218,7 +224,7 @@ const QRCodeScanner = () => {
                 No AI Twin found for the scanned code.
               </Text>
               <Button onPress={handleScanAgain} mt={4}>
-                Try Again
+                <ButtonText>Try Again</ButtonText>
               </Button>
             </View>
           )}

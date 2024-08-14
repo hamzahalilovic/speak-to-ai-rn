@@ -101,7 +101,6 @@ const DiscoverScreen = () => {
         const presetTwins = await getPresetAITwins();
 
         setAiTwinsPreset(presetTwins);
-        setAiTwinsDiscovered(aiTwinsDiscovered);
       };
 
       updatePresetAITwins();
