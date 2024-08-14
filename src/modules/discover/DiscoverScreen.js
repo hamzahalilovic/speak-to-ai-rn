@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, FlatList, StyleSheet, TextInput, Alert} from 'react-native';
 import {
   Text,
@@ -7,11 +7,18 @@ import {
   Box,
   Pressable,
 } from '@gluestack-ui/themed-native-base';
-import {useNavigation} from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import AITwinCard from './components/AITwinCard';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useAppContext} from '../../context/AppContext';
-import {saveDiscoveredAITwins} from '../discover/utils/aiTwinsStorage';
+import {
+  getPresetAITwins,
+  saveDiscoveredAITwins,
+} from '../discover/utils/aiTwinsStorage';
 
 const DiscoverScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -24,10 +31,11 @@ const DiscoverScreen = () => {
     aiTwinsPreset,
     aiTwinsDiscovered,
     setAiTwinsDiscovered,
+    setAiTwinsPreset,
   } = useAppContext();
   const navigation = useNavigation();
 
-  const handleAddOrRemoveTwin = twin => {
+  const handleAddOrRemoveTwinHome = twin => {
     if (isAITwinAdded(twin.knowledgebaseId)) {
       removeAITwinFromHome(twin.knowledgebaseId);
     } else {
@@ -35,7 +43,7 @@ const DiscoverScreen = () => {
     }
   };
 
-  const handleDeleteTwin = knowledgebaseId => {
+  const handleDeleteTwinDiscovered = knowledgebaseId => {
     Alert.alert(
       'Delete AI Twin',
       'Are you sure you want to delete this AI Twin?',
@@ -59,7 +67,7 @@ const DiscoverScreen = () => {
     );
   };
 
-  const handleDeleteAllTwins = () => {
+  const handleDeleteAllTwinsDiscovered = () => {
     Alert.alert(
       'Delete All AI Twins',
       'Are you sure you want to delete all discovered AI Twins? This action cannot be undone.',
@@ -83,9 +91,22 @@ const DiscoverScreen = () => {
   console.log('aiTwinsPreset', aiTwinsPreset);
   console.log('aiTwinsDiscovered', aiTwinsDiscovered);
 
+  useFocusEffect(
+    useCallback(() => {
+      // This will run every time the DiscoverScreen is focused
+      const updatePresetAITwins = async () => {
+        // Assuming you're getting the updated preset twins
+        const presetTwins = await getPresetAITwins();
+        setAiTwinsPreset(presetTwins);
+      };
+
+      updatePresetAITwins();
+    }, []),
+  );
+
   return (
     <View style={styles.container}>
-      <Text fontSize={24} fontWeight={600}  mb={4}>
+      <Text fontSize={24} fontWeight={600} mb={4}>
         Discover AI’s
       </Text>
       <TextInput
@@ -130,7 +151,7 @@ const DiscoverScreen = () => {
                   setSelectedAI(item);
                   navigation.navigate('Chat');
                 }}
-                onAddOrRemove={() => handleAddOrRemoveTwin(item)}
+                onAddOrRemove={() => handleAddOrRemoveTwinHome(item)}
                 isAdded={isAITwinAdded(item.knowledgebaseId)}
               />
             </VStack>
@@ -148,23 +169,25 @@ const DiscoverScreen = () => {
               <VStack style={styles.cardWrapper}>
                 <AITwinCard
                   deletable={true}
-                  avatar={item.avatarUrl}
+                  avatar={item.avatar}
                   name={item.title}
                   description={item.description}
                   onChatPress={() => {
                     setSelectedAI(item);
                     navigation.navigate('Chat');
                   }}
-                  onAddOrRemove={() => handleAddOrRemoveTwin(item)}
+                  onAddOrRemove={() => handleAddOrRemoveTwinHome(item)}
                   isAdded={isAITwinAdded(item.knowledgebaseId)}
-                  onDelete={() => handleDeleteTwin(item.knowledgebaseId)}
+                  onDelete={() =>
+                    handleDeleteTwinDiscovered(item.knowledgebaseId)
+                  }
                 />
               </VStack>
             )}
           />
           {aiTwinsDiscovered.length > 0 && (
             <Button
-              onPress={handleDeleteAllTwins}
+              onPress={handleDeleteAllTwinsDiscovered}
               mt={4}
               colorScheme="red"
               variant="outline">
