@@ -67,7 +67,7 @@ const AppNavigator = () => (
     <Tab.Screen
       name="ScannerStack"
       component={ScannerStack}
-      options={{headerShown: false, tabBarLabel: 'Find AI Twins'}}
+      options={{headerShown: false, tabBarLabel: 'Add Twin'}}
     />
     <Tab.Screen
       name="ProfileStack"
